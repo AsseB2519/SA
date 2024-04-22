@@ -23,36 +23,11 @@ class LongJumpActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        /*/ Create a new user with a first and last name
-        val user = hashMapOf(
-            "first" to "Rui",
-            "last" to "Silva",
-            "born" to 2002
-        )
-
-        // Add a new document with a generated ID
-        db.collection("users")
-            .add(user)
-            .addOnSuccessListener { documentReference ->
-                Log.d("User", "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w("User", "Error adding document", e)
-            }
-        */
-        val listaDeDados = ArrayList<User>()
 
         val result = db.collection("users")
             .get()
             .addOnSuccessListener { result ->
-                //val listaDeDados2=result.toObjects<User>()
-                for (document in result) {
-                    Log.d("User555", "${document.id} => ${document.data}")
-                    val dado = document.toObject<User>()
-                    listaDeDados.add(dado.copy())
-                    //listaDeDados.add(User(dado.first, dado.last, dado.born))
-                    //Log.w("User555","${dado.born}")
-                }
+                val listaDeDados=result.toObjects<User>()
                 for(u in listaDeDados){
                     Log.w("User555","${u.first}, ${u.last}, ${u.born}")
                 }
@@ -60,6 +35,5 @@ class LongJumpActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.w("User555", "Error getting documents.", exception)
             }
-
     }
 }

@@ -55,7 +55,7 @@ class BoxActivity : AppCompatActivity() {
             sensorManager.unregisterListener(accelerometerSensorListener)
 
             val db = FirebaseFirestore.getInstance()
-            val listaDeDados = ArrayList<Accelerometerdata>()
+            val listaDeDados = ArrayList<AccelerometerData>()
 
             db.collection("accelerometro")
                 .orderBy("timestamp", Query.Direction.ASCENDING)
@@ -63,7 +63,7 @@ class BoxActivity : AppCompatActivity() {
                 .addOnSuccessListener { result ->
                     for (document in result) {
 
-                        listaDeDados.add(document.toObject(Accelerometerdata::class.javaObjectType))
+                        listaDeDados.add(document.toObject(AccelerometerData::class.javaObjectType))
 
                         Log.d("Leitor", "${document.id} => ${document.data}")
                     }
@@ -75,7 +75,7 @@ class BoxActivity : AppCompatActivity() {
 
         }
 
-        val accelerometerObserver = Observer<Accelerometerdata> { accSample ->
+        val accelerometerObserver = Observer<AccelerometerData> { accSample ->
             findViewById<TextView>(R.id.value_for_x).text = accSample.accelerometerX.toString()
             findViewById<TextView>(R.id.value_for_y).text = accSample.accelerometerY.toString()
             findViewById<TextView>(R.id.value_for_z).text = accSample.accelerometerZ.toString()

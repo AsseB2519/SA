@@ -24,22 +24,30 @@ class GyroscopeSensorListener: SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent) {
 
-        Gyroscopedata.valueX = event.values[0]
-        Gyroscopedata.valueY = event.values[1]
-        Gyroscopedata.valueZ = event.values[2]
-        Gyroscopedata.accuracy = event.accuracy
+        val GyroscopeData = GyroscopeData(
+            valueX = event.values[0],
+            valueY = event.values[1],
+            valueZ = event.values[2],
+            accuracy = event.accuracy,
+        )
+
+        //Gyroscopedata.valueX = event.values[0]
+        //Gyroscopedata.valueY = event.values[1]
+        //Gyroscopedata.valueZ = event.values[2]
+        //Gyroscopedata.accuracy = event.accuracy
+
         //sensorManager.unregisterListener(this)
-        ourGyroscopeViewModel.currentGyroscopeData.value = Gyroscopedata
-        Log.d(TAG,"[SENSOR] - X=${Gyroscopedata.valueX},Y=${Gyroscopedata.valueY}," +
-                "Z=${Gyroscopedata.valueZ}")
+        ourGyroscopeViewModel.currentGyroscopeData.value = GyroscopeData
+        Log.d(TAG,"[SENSOR] - X=${GyroscopeData.valueX},Y=${GyroscopeData.valueY}," +
+                "Z=${GyroscopeData.valueZ}")
 
         val db = Firebase.firestore
 
         // Create a new user with a first and last name
         val accelerometer = hashMapOf(
-            "x" to Gyroscopedata.valueX,
-            "y" to Gyroscopedata.valueY,
-            "z" to Gyroscopedata.valueZ
+            "x" to GyroscopeData.valueX,
+            "y" to GyroscopeData.valueY,
+            "z" to GyroscopeData.valueZ
         )
 
         // Add a new document with a generated ID

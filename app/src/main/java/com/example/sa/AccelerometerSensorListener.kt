@@ -24,26 +24,27 @@ class AccelerometerSensorListener: SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent) {
 
-        Accelerometerdata.accelerometerX = event.values[0]
-        Accelerometerdata.accelerometerY = event.values[1]
-        Accelerometerdata.accelerometerZ = event.values[2]
-        // Obter o timestamp
-        Accelerometerdata.timestamp = event.timestamp
+        val AccelerometerData = AccelerometerData(
+            accelerometerX = event.values[0],
+            accelerometerY = event.values[1],
+            accelerometerZ = event.values[2],
+            accuracy = event.accuracy,
+            timestamp = event.timestamp
+        )
 
-        Accelerometerdata.accuracy = event.accuracy
         //sensorManager.unregisterListener(this)
-        ourAccelerometerViewModel.currentAccelerometerData.value = Accelerometerdata
-        Log.d(TAG,"[SENSOR] - X=${Accelerometerdata.accelerometerX},Y=${Accelerometerdata.accelerometerY}," +
-                "Z=${Accelerometerdata.accelerometerZ}")
+        ourAccelerometerViewModel.currentAccelerometerData.value = AccelerometerData
+        Log.d(TAG,"[SENSOR] - X=${AccelerometerData.accelerometerX},Y=${AccelerometerData.accelerometerY}," +
+                "Z=${AccelerometerData.accelerometerZ}")
 
         val db = Firebase.firestore
 
         // Create a new user with a first and last name
         val accelerometer = hashMapOf(
-            "accelerometerX" to Accelerometerdata.accelerometerX,
-            "accelerometerY" to Accelerometerdata.accelerometerY,
-            "accelerometerZ" to Accelerometerdata.accelerometerZ,
-            "timestamp" to Accelerometerdata.timestamp
+            "accelerometerX" to AccelerometerData.accelerometerX,
+            "accelerometerY" to AccelerometerData.accelerometerY,
+            "accelerometerZ" to AccelerometerData.accelerometerZ,
+            "timestamp" to AccelerometerData.timestamp
         )
 
         // Add a new document with a generated ID
