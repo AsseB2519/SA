@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">SA</string>
+    <string name="register">Register</string>
+    <string name="next">Next</string>
+    <string name="start">Start</string>
+    <string name="smart_sport">Smart Sport</string>
+    <string name="intro_des_1">A way of living</string>
+
+    <string name="smart_sport2">Smart Sport</string>
+    <string name="intro_des_2">A way of living</string>
+
+    <string name="smart_sport3">Smart Sport</string>
+    <string name="intro_des_3">A way of living</string>
+</resources>
