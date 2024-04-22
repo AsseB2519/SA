@@ -49,11 +49,12 @@ class LongJumpActivity : AppCompatActivity() {
                 for (document in result) {
                     Log.d("User555", "${document.id} => ${document.data}")
                     val dado = document.toObject<User>()
-                    listaDeDados.add(dado)
+                    listaDeDados.add(dado.copy())
+                    //listaDeDados.add(User(dado.first, dado.last, dado.born))
                     //Log.w("User555","${dado.born}")
                 }
                 for(u in listaDeDados){
-                    Log.w("User555","${u.born}")
+                    Log.w("User555","${u.first}, ${u.last}, ${u.born}")
                 }
             }
             .addOnFailureListener { exception ->
