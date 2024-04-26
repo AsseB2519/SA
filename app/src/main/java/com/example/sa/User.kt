@@ -7,9 +7,9 @@ data class User (
 ) {
 
     private fun copy(): User {
-                val first = this.first
-                val last = this.last
-                val born = this.born
-                return User(first, last, born)
+        val first = this.first
+        val last = this.last
+        val born = this.born
+        return User(first, last, born)
     }
 }

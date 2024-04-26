@@ -15,11 +15,14 @@ class GyroscopeSensorListener: SensorEventListener {
 
     private lateinit var sensorManager: SensorManager
     private lateinit var ourGyroscopeViewModel: GyroscopeViewModel
+    private lateinit var novoSaltoId:String
+    private lateinit var colecao:String
 
-
-    fun setSensorManager(sensorMan: SensorManager, aViewModel: GyroscopeViewModel) {
+    fun setSensorManager(sensorMan: SensorManager, aViewModel: GyroscopeViewModel,colecao:String,novoSaltoId: String) {
         sensorManager = sensorMan
         ourGyroscopeViewModel = aViewModel
+        this.novoSaltoId = novoSaltoId
+        this.colecao = colecao
     }
 
     override fun onSensorChanged(event: SensorEvent) {
@@ -29,12 +32,8 @@ class GyroscopeSensorListener: SensorEventListener {
             valueY = event.values[1],
             valueZ = event.values[2],
             accuracy = event.accuracy,
+            timestamp = event.timestamp
         )
-
-        //Gyroscopedata.valueX = event.values[0]
-        //Gyroscopedata.valueY = event.values[1]
-        //Gyroscopedata.valueZ = event.values[2]
-        //Gyroscopedata.accuracy = event.accuracy
 
         //sensorManager.unregisterListener(this)
         ourGyroscopeViewModel.currentGyroscopeData.value = GyroscopeData
@@ -44,15 +43,17 @@ class GyroscopeSensorListener: SensorEventListener {
         val db = Firebase.firestore
 
         // Create a new user with a first and last name
-        val accelerometer = hashMapOf(
-            "x" to GyroscopeData.valueX,
-            "y" to GyroscopeData.valueY,
-            "z" to GyroscopeData.valueZ
+        val gyroscope = hashMapOf(
+            "gyroscopeX" to GyroscopeData.valueX,
+            "gyroscopeY" to GyroscopeData.valueY,
+            "gyroscopeZ" to GyroscopeData.valueZ,
+            "timestamp" to GyroscopeData.timestamp
         )
 
         // Add a new document with a generated ID
-        db.collection("gyroscopedata")
-            .add(accelerometer)
+        db.collection(colecao).document(novoSaltoId)
+            .collection("GyroscopeData")
+            .add(gyroscope)
             .addOnSuccessListener { documentReference ->
                 Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
             }

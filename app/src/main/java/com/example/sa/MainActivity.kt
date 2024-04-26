@@ -5,32 +5,29 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
+        // Initialize Firebase Auth
+        auth = Firebase.auth
+        val currentUser = auth.currentUser
+        Log.w("User666","${currentUser?.email}")
 
-        findViewById<ImageView>(R.id.imageView3).setOnClickListener{
-            Log.d("BUTTON", "Stop button pressed!")
-            val intent = Intent(this, BoxActivity::class.java)
+        if (currentUser != null){
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
+        }else{
+            val intent = Intent(this, LogInActivity::class.java)
             startActivity(intent)
         }
-
-        findViewById<ImageView>(R.id.imageView5).setOnClickListener{
-            Log.d("BUTTON", "Siga saltar")
-            val intent = Intent(this, JumpActivity::class.java)
-            startActivity(intent)
-        }
-
-        findViewById<ImageView>(R.id.imageView4).setOnClickListener{
-            Log.d("BUTTON", "Siga saltar")
-            val intent = Intent(this, LongJumpActivity::class.java)
-            startActivity(intent)
-        }
-
     }
 }

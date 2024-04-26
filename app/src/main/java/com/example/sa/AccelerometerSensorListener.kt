@@ -15,16 +15,19 @@ class AccelerometerSensorListener: SensorEventListener {
 
     private lateinit var sensorManager: SensorManager
     private lateinit var ourAccelerometerViewModel: AccelerometerViewModel
+    private lateinit var novoSaltoId:String
+    private lateinit var colecao:String
 
-
-    fun setSensorManager(sensorMan: SensorManager,aViewModel: AccelerometerViewModel) {
+    fun setSensorManager(sensorMan: SensorManager,aViewModel: AccelerometerViewModel, colecao:String,novoSaltoId: String) {
         sensorManager = sensorMan
         ourAccelerometerViewModel = aViewModel
+        this.novoSaltoId = novoSaltoId
+        this.colecao = colecao
     }
 
     override fun onSensorChanged(event: SensorEvent) {
 
-        val AccelerometerData = AccelerometerData(
+        val accelerometerData = AccelerometerData(
             accelerometerX = event.values[0],
             accelerometerY = event.values[1],
             accelerometerZ = event.values[2],
@@ -33,22 +36,23 @@ class AccelerometerSensorListener: SensorEventListener {
         )
 
         //sensorManager.unregisterListener(this)
-        ourAccelerometerViewModel.currentAccelerometerData.value = AccelerometerData
-        Log.d(TAG,"[SENSOR] - X=${AccelerometerData.accelerometerX},Y=${AccelerometerData.accelerometerY}," +
-                "Z=${AccelerometerData.accelerometerZ}")
+        ourAccelerometerViewModel.currentAccelerometerData.value = accelerometerData
+        Log.d(TAG,"[SENSOR] - X=${accelerometerData.accelerometerX},Y=${accelerometerData.accelerometerY}," +
+                "Z=${accelerometerData.accelerometerZ}")
 
         val db = Firebase.firestore
 
         // Create a new user with a first and last name
         val accelerometer = hashMapOf(
-            "accelerometerX" to AccelerometerData.accelerometerX,
-            "accelerometerY" to AccelerometerData.accelerometerY,
-            "accelerometerZ" to AccelerometerData.accelerometerZ,
-            "timestamp" to AccelerometerData.timestamp
+            "accelerometerX" to accelerometerData.accelerometerX,
+            "accelerometerY" to accelerometerData.accelerometerY,
+            "accelerometerZ" to accelerometerData.accelerometerZ,
+            "timestamp" to accelerometerData.timestamp
         )
 
         // Add a new document with a generated ID
-        db.collection("accelerometro")
+        db.collection(colecao).document(novoSaltoId)
+            .collection("AccelerometerData")
             .add(accelerometer)
             .addOnSuccessListener { documentReference ->
                 Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
