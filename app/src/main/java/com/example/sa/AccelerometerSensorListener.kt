@@ -52,10 +52,10 @@ class AccelerometerSensorListener: SensorEventListener {
 
         // Add a new document with a generated ID
         db.collection(colecao).document(novoSaltoId)
-            .collection("AccelerometerData")
-            .add(accelerometer)
+            .collection("AccelerometerData").document(accelerometerData.timestamp.toString())
+            .set(accelerometer)
             .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+                Log.d(TAG, "DocumentSnapshot added with ID: ${accelerometerData.timestamp}")
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error adding document", e)

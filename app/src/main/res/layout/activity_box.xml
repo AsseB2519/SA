@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -9,125 +9,62 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="143dp"
-        android:layout_marginTop="41dp"
-        android:text="Smart Sport"
-        app:layout_constraintHorizontal_bias="0.516"
+        android:layout_marginTop="40dp"
+        android:text="Box"
+        android:textSize="42dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.077" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/register_button"
+        android:id="@+id/startbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="84dp"
+        android:layout_marginBottom="108dp"
+        android:text="@string/start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/timerdisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="124dp"
-        android:text="@string/register"
-        tools:layout_editor_absoluteX="70dp"
-        tools:layout_editor_absoluteY="502dp"
-        />
-
-    <Button
-        android:id="@+id/unregister_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="61dp"
-        android:layout_marginBottom="124dp"
-        android:text="Unregister"
-        tools:layout_editor_absoluteX="274dp"
-        tools:layout_editor_absoluteY="509dp" />
+        android:text="00:05"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/startbox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/acc_for_x"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="81dp"
-        android:layout_marginTop="151dp"
-        android:text="Accelerator X"
-        tools:layout_editor_absoluteX="71dp"
-        tools:layout_editor_absoluteY="149dp" />
+        android:id="@+id/Pontuação"
+        android:layout_width="150dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="76dp"
+        android:text="Pontuação"
+        android:textSize="28dp"
+        app:layout_constraintBottom_toTopOf="@+id/timerdisplay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.068" />
 
     <TextView
-        android:id="@+id/acc_for_y"
+        android:id="@+id/pontos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="237dp"
-        android:text="Accelerator Y"
-        tools:layout_editor_absoluteX="71dp"
-        tools:layout_editor_absoluteY="220dp" />
+        android:text="000"
+        android:textSize="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/timerdisplay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Pontuação" />
 
-    <TextView
-        android:id="@+id/acc_for_z"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="313dp"
-        android:text="Accelerator Z"
-        tools:layout_editor_absoluteX="70dp"
-        tools:layout_editor_absoluteY="304dp" />
-
-    <TextView
-        android:id="@+id/value_for_x"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="153dp"
-        android:layout_marginEnd="110dp"
-        android:text="0"
-        tools:layout_editor_absoluteX="272dp"
-        tools:layout_editor_absoluteY="150dp" />
-
-    <TextView
-        android:id="@+id/value_for_y"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="293dp"
-        android:layout_marginTop="237dp"
-        android:text="0"
-        tools:layout_editor_absoluteX="272dp"
-        tools:layout_editor_absoluteY="221dp" />
-
-    <TextView
-        android:id="@+id/value_for_z"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="294dp"
-        android:layout_marginTop="318dp"
-        android:text="0"
-        tools:layout_editor_absoluteX="274dp"
-        tools:layout_editor_absoluteY="309dp" />
-
-    <TextView
-        android:id="@+id/timerdisplaybox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="181dp"
-        android:layout_marginEnd="172dp"
-        android:layout_marginBottom="244dp"
-        android:text="TextView" />
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,9 +27,8 @@ import java.math.BigDecimal
 
 class JumpActivity : AppCompatActivity() {
 
-    private val accelerometerViewModel: AccelerometerViewModel by viewModels();
     private val aViewModel: AccelerometerViewModel by viewModels();
-    private val gyroscopeViewModel: GyroscopeViewModel by viewModels();
+    private val aViewModel2: GyroscopeViewModel by viewModels();
     private lateinit var mediaPlayerbip: MediaPlayer
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
@@ -45,13 +44,12 @@ class JumpActivity : AppCompatActivity() {
         auth = com.google.firebase.ktx.Firebase.auth
 
         findViewById<Button>(R.id.startjump).setOnClickListener {
-            mediaPlayerbip.start()
-            object : CountDownTimer(3000, 1000) {
+            object : CountDownTimer(5000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
                     val secondsRemaining = millisUntilFinished / 1000
                     val minutes = secondsRemaining / 60
                     val seconds = secondsRemaining % 60
-
+                    if (seconds.toInt()==2){mediaPlayerbip.start()}
                     val formattedTime = String.format("%02d:%02d", minutes, seconds+1)
                     findViewById<TextView>(R.id.timerdisplay).text = formattedTime
                 }
@@ -78,6 +76,10 @@ class JumpActivity : AppCompatActivity() {
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val mAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         val accelerometerSensorListener = AccelerometerSensorListener()
+
+        val mGyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+        val gyroscopeSensorListener = GyroscopeSensorListener()
+
         var novoSaltoId:String= ""
         // Declare um Handler e um Runnable
         val handler = Handler()
@@ -85,6 +87,7 @@ class JumpActivity : AppCompatActivity() {
         val stopSensorTask = Runnable {
             // Pare de coletar os dados do acelerômetro
             sensorManager.unregisterListener(accelerometerSensorListener)
+            sensorManager.unregisterListener(gyroscopeSensorListener)
             lerDocs(novoSaltoId)
         }
 
@@ -108,6 +111,17 @@ class JumpActivity : AppCompatActivity() {
                     sensorManager.registerListener(
                         accelerometerSensorListener,
                         accelerometer,
+                        SensorManager.SENSOR_DELAY_GAME
+                    )
+
+                    // Defina um tempo para parar de coletar os dados (por exemplo, 1 segundos)
+                    handler.postDelayed(stopSensorTask, 2000) // 1000 milissegundos = 1 segundos
+                }
+                mGyroscope?.let { gyroscope ->
+                    gyroscopeSensorListener.setSensorManager(sensorManager, aViewModel2,"Jump",novoSaltoId)
+                    sensorManager.registerListener(
+                        gyroscopeSensorListener,
+                        gyroscope,
                         SensorManager.SENSOR_DELAY_NORMAL
                     )
 
@@ -130,54 +144,80 @@ class JumpActivity : AppCompatActivity() {
             .addOnSuccessListener { result ->
                 val listaDeDados=result.toObjects<AccelerometerData>()
 
-                val pontuacao = calcularpontuacao(listaDeDados)
+                val pontuacao = calcularpontuacao(listaDeDados,novoSaltoId)
                 animarPontuacao(800)
 
             }
             .addOnFailureListener { exception ->
                 Log.w("User555", "Error getting documents.", exception)
             }
+
+
     }
 
-    private fun calcularpontuacao(listaDeDados:List<AccelerometerData>):Int{
-        var res  = 800
+    fun maxNegativoAntesDeSubir(listaDeDados: List<AccelerometerData>): AccelerometerData? {
+        var maxNegativo: Float? = null
+        var indice:Int=0
+
+        for (i in listaDeDados.indices) {
+            val valor = listaDeDados[i].accelerometerZ
+            // Se o valor for negativo e ainda não encontramos um máximo negativo
+            if (valor < 0) {
+                if (maxNegativo == null || valor < maxNegativo){
+                    maxNegativo = valor
+                    indice=i
+                }
+                else if(valor>maxNegativo){
+                    break
+                }
+            }
+            // Se encontramos um valor positivo ou zero, paramos
+            else if (valor >= 0 && maxNegativo != null) {
+                break
+            }
+        }
+
+        return listaDeDados[indice]
+    }
+
+    private fun calcularpontuacao(listaDeDados:List<AccelerometerData>,novoSaltoId:String):Int{
+        var pontos  = 800
         var jumpHeight = 0f
         var velocity = 0f
         var lastTimeStamp = listaDeDados.first().timestamp
 
-        // Iterar sobre os dados de aceleração e timestamps
-        for (i in 1 until listaDeDados.size) {
-            val acceleration = listaDeDados[i].accelerometerZ
-            val currentTimeStamp = listaDeDados[i].timestamp
+        // Encontre o elemento com o menor valor de accelerometerZ
+        val elementoMaisNegativo = maxNegativoAntesDeSubir(listaDeDados)
+        Log.w("User555","minimo $elementoMaisNegativo")
 
-            // Calcular o intervalo de tempo desde a última amostra
-            val timeInterval = BigDecimal(currentTimeStamp - lastTimeStamp).divide(BigDecimal(1000000000)).toFloat()// Convertendo para segundos
+        // Obtenha o timestamp do primeiro elemento da lista
+        val primeiroTimestamp = listaDeDados.firstOrNull()?.timestamp ?: 0
 
-            // Integração da aceleração para obter a velocidade
-            velocity += acceleration * timeInterval
-
-            // Integração da velocidade para obter a altura
-            jumpHeight += velocity * timeInterval + 0.5f * acceleration * timeInterval *timeInterval
-
-            // Atualizar o timestamp da última amostra
-            lastTimeStamp = currentTimeStamp
+        // Calcule a diferença de tempo se o elemento mais negativo existir
+        val diferencaDeTempo: Long = if (elementoMaisNegativo != null) {
+            val timestampMaisNegativo = elementoMaisNegativo.timestamp
+            timestampMaisNegativo - primeiroTimestamp
+        } else {
+            0// Se não houver elemento mais negativo, retorne 0
         }
-        Log.w("Altura","$jumpHeight")
+        var res = BigDecimal(diferencaDeTempo).divide(BigDecimal(1000000000))
 
-        /*/ Referência para o documento que você deseja atualizar
-        val docRef = db.collection("Jump").document("$novoSaltoId")
+        val h= 0.5 * res.toFloat()*res.toFloat()*9.81
+
+        // Referência para o documento que você deseja atualizar
+        val docRef = db.collection("Jump").document(novoSaltoId)
 
         // Atualiza o campo desejado
         docRef
-            .update("altura", jumpHeight)
+            .update("altura", h)
             .addOnSuccessListener {
                 // Sucesso ao atualizar o campo
             }
             .addOnFailureListener { e ->
                 // Tratamento de erro
             }
-        */
-        return res
+
+        return pontos
     }
 
     private fun animarPontuacao(pontuacao:Int) {

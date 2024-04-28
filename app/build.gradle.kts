@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.gms.google-services")
+
 }
 
 android {
@@ -38,6 +39,7 @@ android {
     buildFeatures{
         viewBinding = true
     }
+
 }
 
 dependencies {
@@ -54,4 +56,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation ("com.github.AnyChart:AnyChart-Android:1.1.5")
+
 }

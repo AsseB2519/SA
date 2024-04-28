@@ -48,6 +48,14 @@ class MenuActivity : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.imageView6).setOnClickListener{
             Log.d("BUTTON", "Siga saltar")
+            val intent = Intent(this, ShootActivity::class.java)
+            startActivity(intent)
+        }
+
+        findViewById<ImageView>(R.id.stats).setOnClickListener{
+            Log.d("BUTTON", "Siga saltar")
+            val intent = Intent(this, StatsActivity::class.java)
+            startActivity(intent)
         }
 
 
