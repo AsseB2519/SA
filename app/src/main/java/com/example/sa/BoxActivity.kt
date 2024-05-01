@@ -8,6 +8,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.os.Vibrator
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
@@ -18,6 +19,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,6 +47,8 @@ class BoxActivity : AppCompatActivity() {
         // Initialize Firebase Auth
         auth = com.google.firebase.ktx.Firebase.auth
 
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
         findViewById<Button>(R.id.startbox).setOnClickListener {
             object : CountDownTimer(5000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
@@ -57,6 +61,7 @@ class BoxActivity : AppCompatActivity() {
                 }
 
                 override fun onFinish() {
+                    vibrator.vibrate(1000)
                     val formattedTime = String.format("%02d:%02d", 0, 0)
                     findViewById<TextView>(R.id.timerdisplay).text = formattedTime
                     //alertDialog.setMessage("Parabéns")
@@ -77,6 +82,7 @@ class BoxActivity : AppCompatActivity() {
         val mGyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
         val gyroscopeSensorListener = GyroscopeSensorListener()
 
+
         var novoSocoId:String= ""
         // Declare um Handler e um Runnable
         val handler = Handler()
@@ -94,7 +100,8 @@ class BoxActivity : AppCompatActivity() {
         val novoSocoData  = hashMapOf(
             "user_id" to currentUser?.uid,
             "força" to 0,
-            "pontuação" to 0
+            "pontuação" to 0,
+            "timestamp" to Timestamp.now()
         )
 
         Log.w("User555","$novoSocoData")

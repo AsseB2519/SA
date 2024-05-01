@@ -22,6 +22,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.firestore
 import java.util.concurrent.ExecutionException
 import android.os.Handler
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.toObjects
 import java.math.BigDecimal
 
@@ -97,7 +98,8 @@ class JumpActivity : AppCompatActivity() {
         val novoSaltoData  = hashMapOf(
             "user_id" to currentUser?.uid,
             "altura" to 0,
-            "pontuação" to 0
+            "pontuação" to 0,
+            "timestamp" to Timestamp.now()
         )
 
         val novoSaltoRef = db.collection("Jump").add(novoSaltoData)

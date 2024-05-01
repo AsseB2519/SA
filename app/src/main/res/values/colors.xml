@@ -8,4 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="lavender">#8692f7</color>
+    <color name="azuldefault">#4AC3F3</color>
+    <color name="azuldefault1">#D14AC3F3</color>
+    <color name="verdedefault">#4BAA28</color>
+    <color name="verdedefault1">#D04BAA28</color>
 </resources>
