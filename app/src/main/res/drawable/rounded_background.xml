@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="18dp" /> <!-- Raio dos cantos -->
+    <solid android:color="@color/corsecundaria" /> <!-- Cor de fundo -->
+</shape>

@@ -3,6 +3,7 @@
     <style name="Base.Theme.SA" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimaryDark">@color/corsecundaria</item> <!-- Cor da barra de status -->
     </style>
 
     <style name="Theme.SA" parent="Base.Theme.SA" />

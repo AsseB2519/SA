@@ -52,8 +52,23 @@ class RadarActivity : AppCompatActivity() {
         radarChart = findViewById(R.id.radar_chart)
         spinner = findViewById(R.id.spinner)
 
+
+        if (userId != null) {
+            GlobalScope.launch(Dispatchers.Main) {
+                val result = obterMaiorPontuacaoPorUsuario(userId)
+                configurarGrafico(result)
+                aux()
+            }
+        } else {
+            println("ID do usuário é nulo. Não é possível contar os documentos.")
+        }
+
+
+    }
+
+    private suspend fun aux(){
         // Lista de opções para o Spinner
-        val opcoes = listOf("Z3J7ndiZR5TzVddgICaassEXDvm1", "Z3J7ndiZR5TzVddgICaassEXDvm1", "Z3J7ndiZR5TzVddgICaassEXDvm1")
+        val opcoes = listOf("Ninguém", "Z3J7ndiZR5TzVddgICaassEXDvm1", "Z3J7ndiZR5TzVddgICaassEXDvm1")
 
         // Criar um adaptador para o Spinner
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcoes)
@@ -62,44 +77,49 @@ class RadarActivity : AppCompatActivity() {
         // Definir o adaptador para o Spinner
         spinner.adapter = adapter
 
-        if (userId != null) {
-            GlobalScope.launch(Dispatchers.Main) {
-                val result = obterMaiorPontuacaoPorUsuario(userId)
-                configurarGrafico(result)
-            }
-        } else {
-            println("ID do usuário é nulo. Não é possível contar os documentos.")
-        }
-
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // Faça algo com o item selecionado, por exemplo:
                 val itemSelecionado = opcoes[position]
 
-                val entries1 = ArrayList<RadarEntry>()
-                entries1.add(RadarEntry(20f))
-                entries1.add(RadarEntry(0f))
-                entries1.add(RadarEntry(30f))
+                if (itemSelecionado != "Ninguém") {
 
-                val dataSet2 = RadarDataSet(entries1, "222")
-                dataSet2.color = Color.BLUE
-                dataSet2.valueTextColor = Color.WHITE
-                dataSet2.valueTextSize = 12f
-                /*
-                radarChart.data.addDataSet(dataSet2)
+                    GlobalScope.launch(Dispatchers.Main) {
+                        var pontuação = obterMaiorPontuacaoPorUsuario(itemSelecionado)
 
-                radarChart.data.notifyDataChanged()
-                */
-                // Recrie o gráfico
-                radarChart.notifyDataSetChanged()
+                        val entries1 = ArrayList<RadarEntry>()
+                        entries1.add(RadarEntry(pontuação["Box"]?.toFloat()?:0f))
+                        entries1.add(RadarEntry(pontuação["Jump"]?.toFloat()?:0f))
+                        entries1.add(RadarEntry(pontuação["Shoot"]?.toFloat()?:0f))
 
+                        val dataSet2 = RadarDataSet(entries1, "222")
+                        dataSet2.color = Color.BLUE
+                        dataSet2.valueTextColor = Color.BLACK
+                        dataSet2.valueTextSize = 12f
+
+                        radarChart.data.addDataSet(dataSet2)
+                        radarChart.data.notifyDataChanged()
+                        radarChart.notifyDataSetChanged()
+                        radarChart.invalidate() // Atualiza o gráfico
+                    }
+                }
+                else{
+                    // Remover conjuntos de dados do índice especificado em diante
+                    for (i in  radarChart.data.dataSetCount - 1 downTo 1) {
+                        val dataSetToRemove =  radarChart.data.getDataSetByIndex(i)
+                        radarChart.data.removeDataSet(dataSetToRemove)
+                    }
+                    radarChart.data.notifyDataChanged()
+                    radarChart.notifyDataSetChanged()
+                    radarChart.invalidate() // Atualiza o gráfico
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // Método necessário, mas pode ser deixado em branco
+
             }
         }
-
     }
 
     private suspend fun obterMaiorPontuacaoPorColecao(userId: String, colecao: String): Long {
@@ -141,7 +161,7 @@ class RadarActivity : AppCompatActivity() {
 
         val dataSet1 = RadarDataSet(entries1, "${auth.currentUser?.email}")
         dataSet1.color = Color.RED
-        dataSet1.valueTextColor = Color.WHITE
+        dataSet1.valueTextColor = Color.BLACK
         dataSet1.valueTextSize = 12f
 
         setupRadarChart()
@@ -156,13 +176,13 @@ class RadarActivity : AppCompatActivity() {
     private fun setupRadarChart() {
         val labels = arrayOf("Box", "Jump", "Shoot")
         radarChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-        radarChart.xAxis.textColor = Color.WHITE
+        radarChart.xAxis.textColor = Color.BLACK
         radarChart.xAxis.textSize = 16f
         radarChart.description.isEnabled = false // Desativa a descrição
         radarChart.webLineWidth = 1f // Largura das linhas do gráfico
-        radarChart.webColor = Color.WHITE // Cor das linhas do gráfico
+        radarChart.webColor = Color.BLACK // Cor das linhas do gráfico
         radarChart.webLineWidthInner = 1f // Largura das linhas internas do gráfico
-        radarChart.webColorInner = Color.WHITE // Cor das linhas internas do gráfico
+        radarChart.webColorInner = Color.BLACK // Cor das linhas internas do gráfico
         radarChart.webAlpha = 100 // Transparência das linhas do gráfico
         radarChart.yAxis.isEnabled=false
 

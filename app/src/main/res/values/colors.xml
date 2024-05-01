@@ -12,4 +12,9 @@
     <color name="azuldefault1">#D14AC3F3</color>
     <color name="verdedefault">#4BAA28</color>
     <color name="verdedefault1">#D04BAA28</color>
+    <color name="corprimaria">#91908D</color>
+    <color name="corsecundaria">#1E252C</color>
+    <color name="corterciaria">#F70316</color>
+    <color name="corquartiaria">#5E5D83</color>
+    <color name="corquinta">#D6D4CE</color>
 </resources>
