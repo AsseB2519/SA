@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.Button
 import android.media.MediaPlayer
@@ -22,6 +23,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.firestore
 import java.util.concurrent.ExecutionException
 import android.os.Handler
+import android.widget.ImageView
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.toObjects
 import java.math.BigDecimal
@@ -65,6 +67,16 @@ class JumpActivity : AppCompatActivity() {
                 }
             }.start()
 
+        }
+        findViewById<ImageView>(R.id.progression).setOnClickListener{
+            val intent = Intent(this, LineActivity::class.java)
+            intent.putExtra("colecao", "Jump")
+            startActivity(intent)
+        }
+        findViewById<ImageView>(R.id.top5).setOnClickListener{
+            val intent = Intent(this, LeaderBoardActivity::class.java)
+            intent.putExtra("colecao", "Jump")
+            startActivity(intent)
         }
     }
 

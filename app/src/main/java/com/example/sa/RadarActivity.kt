@@ -27,6 +27,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class RadarActivity : AppCompatActivity() {
 
@@ -68,7 +71,17 @@ class RadarActivity : AppCompatActivity() {
 
     private suspend fun aux(){
         // Lista de opções para o Spinner
-        val opcoes = listOf("Ninguém", "Z3J7ndiZR5TzVddgICaassEXDvm1", "Z3J7ndiZR5TzVddgICaassEXDvm1")
+        val documentos = buscarDocumentosUsuarios()
+
+        val mapNomeApelidoParaId = documentos.associate { (id, info) ->
+            val nome = info["nome"] ?: ""
+            val apelido = info["apelido"] ?: ""
+            "$nome $apelido" to id
+        }
+
+        var opcoes = mutableListOf("None").apply {
+            addAll(mapNomeApelidoParaId.keys)
+        }
 
         // Criar um adaptador para o Spinner
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcoes)
@@ -82,20 +95,28 @@ class RadarActivity : AppCompatActivity() {
                 // Faça algo com o item selecionado, por exemplo:
                 val itemSelecionado = opcoes[position]
 
-                if (itemSelecionado != "Ninguém") {
+                if (itemSelecionado != "None") {
 
                     GlobalScope.launch(Dispatchers.Main) {
-                        var pontuação = obterMaiorPontuacaoPorUsuario(itemSelecionado)
+                        val cor = "#91908D"
+
+                        var pontuação = mapNomeApelidoParaId[itemSelecionado]?.let {
+                            obterMaiorPontuacaoPorUsuario(
+                                it
+                            )
+                        }
 
                         val entries1 = ArrayList<RadarEntry>()
-                        entries1.add(RadarEntry(pontuação["Box"]?.toFloat()?:0f))
-                        entries1.add(RadarEntry(pontuação["Jump"]?.toFloat()?:0f))
-                        entries1.add(RadarEntry(pontuação["Shoot"]?.toFloat()?:0f))
+                        entries1.add(RadarEntry(pontuação?.get("Box")?.toFloat()?:0f))
+                        entries1.add(RadarEntry(pontuação?.get("Jump")?.toFloat()?:0f))
+                        entries1.add(RadarEntry(pontuação?.get("Shoot")?.toFloat()?:0f))
 
-                        val dataSet2 = RadarDataSet(entries1, "222")
+                        val dataSet2 = RadarDataSet(entries1, itemSelecionado)
                         dataSet2.color = Color.BLUE
-                        dataSet2.valueTextColor = Color.BLACK
+                        dataSet2.valueTextColor = Color.parseColor(cor)
                         dataSet2.valueTextSize = 12f
+                        dataSet2.setDrawFilled(true)
+                        dataSet2.setFillColor(Color.BLUE) // Define a cor do preenchimento
 
                         radarChart.data.addDataSet(dataSet2)
                         radarChart.data.notifyDataChanged()
@@ -111,6 +132,8 @@ class RadarActivity : AppCompatActivity() {
                     }
                     radarChart.data.notifyDataChanged()
                     radarChart.notifyDataSetChanged()
+                    setupRadarChart("#91908D")
+
                     radarChart.invalidate() // Atualiza o gráfico
                 }
             }
@@ -153,18 +176,21 @@ class RadarActivity : AppCompatActivity() {
 
     private fun configurarGrafico(pontuação: Map<String, Long>) {
 
+        val cor = "#91908D"
         // Sample data
         val entries1 = ArrayList<RadarEntry>()
         entries1.add(RadarEntry(pontuação["Box"]?.toFloat()?:0f))
         entries1.add(RadarEntry(pontuação["Jump"]?.toFloat()?:0f))
         entries1.add(RadarEntry(pontuação["Shoot"]?.toFloat()?:0f))
 
-        val dataSet1 = RadarDataSet(entries1, "${auth.currentUser?.email}")
+        val dataSet1 = RadarDataSet(entries1, "You")
         dataSet1.color = Color.RED
-        dataSet1.valueTextColor = Color.BLACK
+        dataSet1.valueTextColor = Color.parseColor(cor)
         dataSet1.valueTextSize = 12f
+        dataSet1.setDrawFilled(true)
+        dataSet1.setFillColor(Color.RED)
 
-        setupRadarChart()
+        setupRadarChart(cor)
 
         val data = RadarData(dataSet1)
 
@@ -173,18 +199,59 @@ class RadarActivity : AppCompatActivity() {
         radarChart.invalidate() // Atualiza o gráfico
     }
 
-    private fun setupRadarChart() {
+    private fun setupRadarChart(cor:String) {
         val labels = arrayOf("Box", "Jump", "Shoot")
+
+        radarChart.description.textColor=Color.parseColor(cor)
+        radarChart.legend.textColor = Color.parseColor(cor)
         radarChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-        radarChart.xAxis.textColor = Color.BLACK
+        radarChart.xAxis.textColor = Color.parseColor(cor)
         radarChart.xAxis.textSize = 16f
         radarChart.description.isEnabled = false // Desativa a descrição
-        radarChart.webLineWidth = 1f // Largura das linhas do gráfico
-        radarChart.webColor = Color.BLACK // Cor das linhas do gráfico
-        radarChart.webLineWidthInner = 1f // Largura das linhas internas do gráfico
-        radarChart.webColorInner = Color.BLACK // Cor das linhas internas do gráfico
+        radarChart.webLineWidth = 2f // Largura das linhas do gráfico
+        radarChart.webColor = Color.parseColor(cor) // Cor das linhas do gráfico
+        radarChart.webLineWidthInner = 2f // Largura das linhas internas do gráfico
+        radarChart.webColorInner = Color.parseColor(cor) // Cor das linhas internas do gráfico
         radarChart.webAlpha = 100 // Transparência das linhas do gráfico
         radarChart.yAxis.isEnabled=false
+        radarChart.animateXY(1000,1000)
 
     }
+
+    suspend fun obterNomeDoUsuario(documentoId: String): String? {
+        return suspendCoroutine { continuation ->
+            db.collection("users").document(documentoId).get().addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val nome = documentSnapshot.getString("nome")
+                    val apelido = documentSnapshot.getString("apelido")
+                    // Faça algo com o nome, como exibir ou retornar
+                    val nomeCompleto = nome + " "+ apelido
+                    continuation.resume(nomeCompleto)
+                } else {
+                    // O documento não existe
+                    continuation.resumeWith(Result.success("falhou"))
+                }
+            }.addOnFailureListener { exception ->
+                // Tratar falha ao obter o documento
+                continuation.resumeWithException(exception)
+            }
+        }
+    }
+
+    suspend fun buscarDocumentosUsuarios(): List<Pair<String, Map<String, Any>>> {
+        val query = db.collection("users")
+
+        val snapshot = query.get().await()
+
+        val documentosUsuarios = mutableListOf<Pair<String, Map<String, Any>>>()
+
+        for (document in snapshot.documents) {
+            val idDocumento = document.id
+            val dadosDocumento = document.data ?: emptyMap()
+            documentosUsuarios.add(Pair(idDocumento, dadosDocumento))
+        }
+
+        return documentosUsuarios
+    }
+
 }

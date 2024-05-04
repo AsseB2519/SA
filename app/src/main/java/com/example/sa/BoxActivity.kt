@@ -2,6 +2,7 @@ package com.example.sa
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.media.MediaPlayer
@@ -11,6 +12,7 @@ import android.os.Handler
 import android.os.Vibrator
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -71,6 +73,16 @@ class BoxActivity : AppCompatActivity() {
                 }
             }.start()
 
+        }
+        findViewById<ImageView>(R.id.progression).setOnClickListener{
+            val intent = Intent(this, LineActivity::class.java)
+            intent.putExtra("colecao", "Box")
+            startActivity(intent)
+        }
+        findViewById<ImageView>(R.id.top5).setOnClickListener{
+            val intent = Intent(this, LeaderBoardActivity::class.java)
+            intent.putExtra("colecao", "Box")
+            startActivity(intent)
         }
 
     }

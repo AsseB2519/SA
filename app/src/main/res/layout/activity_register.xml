@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
     android:padding="15dp"
@@ -12,6 +13,7 @@
     <TextView
         android:text="@string/register"
         android:textSize="20dp"
+        android:textColor="@color/corsecundaria"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginBottom="25dp"
@@ -19,46 +21,61 @@
         android:layout_height="wrap_content" />
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:boxStrokeColor="@color/corsecundaria"
+        app:hintTextColor="@color/corsecundaria">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email"
             android:hint="@string/email"
+            android:backgroundTint="@color/corsecundaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:boxStrokeColor="@color/corsecundaria"
+        app:hintTextColor="@color/corsecundaria">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
             android:hint="@string/password"
+            android:backgroundTint="@color/corsecundaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:boxStrokeColor="@color/corsecundaria"
+        app:hintTextColor="@color/corsecundaria">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/confirmpassword"
             android:hint="@string/confirm_password"
+            android:backgroundTint="@color/corsecundaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:boxStrokeColor="@color/corsecundaria"
+        app:hintTextColor="@color/corsecundaria">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/nome"
             android:hint="Nome"
+            android:backgroundTint="@color/corsecundaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:boxStrokeColor="@color/corsecundaria"
+        app:hintTextColor="@color/corsecundaria">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/apelido"
             android:hint="Apelido"
+            android:backgroundTint="@color/corsecundaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -66,6 +83,8 @@
         android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/corsecundaria"
         android:text="@string/register"/>
 
 </LinearLayout>

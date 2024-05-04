@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -35,12 +36,16 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.Calendar
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class MenuActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -49,6 +54,7 @@ class MenuActivity : AppCompatActivity() {
     private lateinit var buttonDrawer: ImageButton
     private lateinit var spinner: Spinner
     private lateinit var pieChart: PieChart
+    private val db = com.google.firebase.Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +72,9 @@ class MenuActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth
         auth = Firebase.auth
-        pieChart = findViewById(R.id.pieChart)
-        configurarGrafico()
+
+        val head = navView.getHeaderView(0)
+        head.findViewById<TextView>(R.id.email).text=auth.currentUser?.email
 
         val sports = listOf("Line","stats","Radar","Leader")
         
@@ -84,6 +91,7 @@ class MenuActivity : AppCompatActivity() {
 
             if (itemSelected=="Line") {
                 val intent = Intent(this, LineActivity::class.java)
+                intent.putExtra("colecao", "Jump")
                 startActivity(intent)
             }
             else if(itemSelected=="stats"){
@@ -96,6 +104,7 @@ class MenuActivity : AppCompatActivity() {
             }
             else if(itemSelected=="Leader"){
                 val intent = Intent(this, LeaderBoardActivity::class.java)
+                intent.putExtra("colecao", "Jump")
                 startActivity(intent)
             }
         }
@@ -116,12 +125,6 @@ class MenuActivity : AppCompatActivity() {
         }
 
         findViewById<ImageView>(R.id.imageView4).setOnClickListener{
-            Log.d("BUTTON", "Siga saltar")
-            val intent = Intent(this, LongJumpActivity::class.java)
-            startActivity(intent)
-        }
-
-        findViewById<ImageView>(R.id.imageView6).setOnClickListener{
             Log.d("BUTTON", "Siga saltar")
             val intent = Intent(this, ShootActivity::class.java)
             startActivity(intent)
@@ -150,39 +153,76 @@ class MenuActivity : AppCompatActivity() {
         }
 
     }
+    override fun onResume() {
+        super.onResume()
 
-    suspend fun contarDocumentosDoDia(colecao: String): Int {
-        val db = FirebaseFirestore.getInstance()
-        val hoje = Calendar.getInstance()
-        hoje.set(Calendar.HOUR_OF_DAY, 0)
-        hoje.set(Calendar.MINUTE, 0)
-        hoje.set(Calendar.SECOND, 0)
-        hoje.set(Calendar.MILLISECOND, 0)
+        val head = navView.getHeaderView(0)
+        var activity :Int
+        val userId = auth.uid
 
-        val inicioDoDia = Timestamp(hoje.time)
+        if (userId != null) {
+            GlobalScope.launch(Dispatchers.Main) {
+                activity = contarDocumentosPorUsuario(userId)
+                findViewById<TextView>(R.id.activities).text=activity.toString()
+                val aux = auth.uid
+                head.findViewById<TextView>(R.id.nome).text = aux?.let { obterNomeDoUsuario(it) }
+                pieChart = findViewById(R.id.pieChart)
+                configurarGrafico()
+            }
+        } else {
+            println("ID do usuário é nulo. Não é possível contar os documentos.")
+        }
 
-        val amanha = Calendar.getInstance()
-        amanha.add(Calendar.DAY_OF_MONTH, 1)
-        amanha.set(Calendar.HOUR_OF_DAY, 0)
-        amanha.set(Calendar.MINUTE, 0)
-        amanha.set(Calendar.SECOND, 0)
-        amanha.set(Calendar.MILLISECOND, 0)
-
-        val inicioDoDiaAmanha = Timestamp(amanha.time)
-
-        val query = db.collection(colecao)
-            .whereGreaterThanOrEqualTo("timestamp", inicioDoDia)
-            .whereLessThan("timestamp", inicioDoDiaAmanha)
-
-        val snapshot = query.get().await()
-        return snapshot.size()
     }
 
-    private fun configurarGrafico() {
+
+    private suspend fun contarDocumentosCriadosHojeParaUsuario(colecao: String, userId: String): Int {
+        return try {
+            // Obter a data de hoje
+            val hoje = Calendar.getInstance()
+            hoje.set(Calendar.HOUR_OF_DAY, 0)
+            hoje.set(Calendar.MINUTE, 0)
+            hoje.set(Calendar.SECOND, 0)
+            hoje.set(Calendar.MILLISECOND, 0)
+            val inicioDoDia = hoje.time
+
+            // Criar a consulta que busca documentos criados hoje para o usuário especificado
+            val query = db.collection(colecao)
+                .whereEqualTo("user_id", userId)
+                .whereGreaterThanOrEqualTo("timestamp", inicioDoDia)
+
+            val snapshot = query.get().await()
+
+            for (document in snapshot.documents) {
+                Log.d("Firestore", "ID do documento: ${document.id} Coleção:$colecao")
+            }
+
+            snapshot.size()
+        } catch (e: Exception) {
+            // Tratar exceção
+            Log.e("Firestore", "Erro ao contar documentos: $e")
+            // Retornar 0 ou lançar uma exceção, dependendo da sua lógica de tratamento de erros
+            0
+        }
+    }
+
+    private suspend fun contarDocumentosPorUserHoje(userId: String): Int{
+        val colecoes = listOf("Box", "Jump", "Shoot") // Substitua pelos nomes reais das suas coleções
+        var res = 0
+        for (colecao in colecoes) {
+            res += contarDocumentosCriadosHojeParaUsuario(colecao, userId).toInt()
+        }
+
+        return res
+    }
+
+
+    private suspend fun configurarGrafico() {
 
         // Porcentagem atingida e objetivo (valores de exemplo)
-        val percentReached = 75f // Porcentagem atingida
-        val goal = 100f // Objetivo
+        var percentReached = 0f // Porcentagem atingida
+        percentReached = auth.uid?.let { contarDocumentosPorUserHoje(it).toFloat() }!!
+        val goal = 10f // Objetivo
 
         // Calcula a porcentagem restante
         val percentRemaining = goal - percentReached
@@ -196,7 +236,7 @@ class MenuActivity : AppCompatActivity() {
         val dataSet = PieDataSet(entries, "Progresso")
 
         // Cores para as fatias do PieChart
-        dataSet.colors = listOf(Color.parseColor("#F70316"), Color.parseColor("#5E5D83"))
+        dataSet.colors = listOf(Color.parseColor("#E63C3A"), Color.parseColor("#696969"))
         dataSet.valueTextColor = Color.WHITE
         dataSet.setDrawValues(false)
 
@@ -216,4 +256,47 @@ class MenuActivity : AppCompatActivity() {
         pieChart.invalidate() // Atualiza o gráfico
     }
 
+    private suspend fun contarDocumentosPorColecao(userId: String, colecao: String): Long {
+        return try {
+            val query = db.collection(colecao)
+                .whereEqualTo("user_id", userId)
+            val snapshot = query.get().await()
+            snapshot.size().toLong()
+        } catch (e: Exception) {
+            println("Erro ao contar documentos: ${e.message}")
+            0
+        }
+    }
+
+    private suspend fun contarDocumentosPorUsuario(userId: String): Int{
+        val colecoes = listOf("Box", "Jump", "Shoot") // Substitua pelos nomes reais das suas coleções
+        val contagens = mutableMapOf<String, Long>()
+        var res = 0
+        for (colecao in colecoes) {
+            contagens[colecao] = contarDocumentosPorColecao(userId, colecao)
+            res += contarDocumentosPorColecao(userId, colecao).toInt()
+        }
+
+        return res
+    }
+
+    suspend fun obterNomeDoUsuario(documentoId: String): String? {
+        return suspendCoroutine { continuation ->
+            db.collection("users").document(documentoId).get().addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val nome = documentSnapshot.getString("nome")
+                    val apelido = documentSnapshot.getString("apelido")
+                    // Faça algo com o nome, como exibir ou retornar
+                    val nomeCompleto = nome + " "+ apelido
+                    continuation.resume(nomeCompleto)
+                } else {
+                    // O documento não existe
+                    continuation.resumeWith(Result.success("falhou"))
+                }
+            }.addOnFailureListener { exception ->
+                // Tratar falha ao obter o documento
+                continuation.resumeWithException(exception)
+            }
+        }
+    }
 }

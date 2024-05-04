@@ -76,12 +76,6 @@ class ShootActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<Button>(R.id.unregister_button).setOnClickListener {
-            Log.d("BUTTON", "Stop button pressed!")
-            //sensorManager.unregisterListener(gyroscopeSensorListener)
-            sensorManager.unregisterListener(accelerometerSensorListener)
-
-        }
         /*
         val gyroscopeObserver = Observer<GyroscopeData> { gyroSample ->
             findViewById<TextView>(R.id.value_for_x).text = gyroSample.valueX.toString()
@@ -91,13 +85,6 @@ class ShootActivity : AppCompatActivity() {
 
         aViewModel2.currentGyroscopeData.observe(this, gyroscopeObserver)
         */
-        val accelerometerObserver = Observer<AccelerometerData> { gyroSample ->
-            findViewById<TextView>(R.id.value_for_x).text = gyroSample.accelerometerX.toString()
-            findViewById<TextView>(R.id.value_for_y).text = gyroSample.accelerometerY.toString()
-            findViewById<TextView>(R.id.value_for_z).text = gyroSample.accelerometerZ.toString()
-        }
-
-        aViewModel.currentAccelerometerData.observe(this, accelerometerObserver)
     }
     /*
     private fun criarSoco(){

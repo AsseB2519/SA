@@ -4,6 +4,7 @@ import android.R.attr
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,6 +15,8 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -94,7 +97,9 @@ class StatsActivity : AppCompatActivity() {
 
         val dataSet = PieDataSet(dados, "Pie Chart")
         dataSet.setValueTextSize(18f)
-        dataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
+        val customColors = listOf(Color.parseColor("#F70316"), Color.parseColor("#91908D"),
+            Color.parseColor("#5E5D83"))
+        dataSet.colors = customColors
         setupPieChart();
 
         val pieData = PieData(dataSet)
@@ -105,6 +110,9 @@ class StatsActivity : AppCompatActivity() {
 
     private fun setupPieChart() {
         pieChart.setDrawHoleEnabled(true)
+        pieChart.setHoleColor(Color.TRANSPARENT)
+        pieChart.setCenterTextColor(Color.WHITE)
+        pieChart.setTransparentCircleColor(Color.TRANSPARENT)
         pieChart.setUsePercentValues(true)
         pieChart.setCenterTextSize(18f);
         pieChart.setEntryLabelColor(Color.BLACK)
