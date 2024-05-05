@@ -8,10 +8,15 @@
     android:gravity="center"
     android:padding="15dp"
     android:background="@drawable/in_background"
-    tools:context=".RegisterActivity">
+    tools:context=".ProfileActivity">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="312dp"
+        android:layout_height="170dp"
+        app:srcCompat="@drawable/baseline_person_24" />
     <TextView
-        android:text="@string/register"
+        android:text="Profile"
         android:textSize="32dp"
         android:textColor="@color/corsecundaria"
         android:textStyle="bold"
@@ -23,11 +28,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:boxStrokeColor="@color/corsecundaria"
-        app:hintTextColor="@color/corsecundaria"
-        android:layout_marginBottom="20dp">>
+        app:hintTextColor="@color/corsecundaria">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email"
-            android:hint="@string/email"
+            android:id="@+id/nome"
+            android:hint="Nome"
             android:backgroundTint="@color/corsecundaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -36,11 +40,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:boxStrokeColor="@color/corsecundaria"
-        app:hintTextColor="@color/corsecundaria"
-        android:layout_marginBottom="20dp">>
+        app:hintTextColor="@color/corsecundaria">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password"
-            android:hint="@string/password"
+            android:id="@+id/apelido"
+            android:hint="Apelido"
             android:backgroundTint="@color/corsecundaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -49,11 +52,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:boxStrokeColor="@color/corsecundaria"
-        app:hintTextColor="@color/corsecundaria"
-        android:layout_marginBottom="20dp">>
+        app:hintTextColor="@color/corsecundaria">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/confirmpassword"
-            android:hint="@string/confirm_password"
+            android:id="@+id/altura"
+            android:hint="Altura"
+            android:backgroundTint="@color/corsecundaria"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:boxStrokeColor="@color/corsecundaria"
+        app:hintTextColor="@color/corsecundaria">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/peso"
+            android:hint="Peso"
             android:backgroundTint="@color/corsecundaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

@@ -39,23 +39,28 @@
         android:id="@+id/spinner"
         android:layout_width="150dp"
         android:layout_height="30dp"
+        android:textColor="@color/corsecundaria"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@id/radar_chart"
-        app:layout_constraintVertical_bias="0.333" />
+        app:layout_constraintVertical_bias="0.606"
+        android:layout_marginBottom="20dp"/>
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="56dp"
-        android:layout_marginBottom="28dp"
-        android:text="Compare with:"
-        android:textSize="18dp"
-        android:textColor="@color/corsecundaria"
+        android:layout_marginBottom="32dp"
         android:fontFamily="@font/firebrand"
+        android:text="Compare with:"
+        android:textColor="@color/corsecundaria"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/spinner"
+
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 

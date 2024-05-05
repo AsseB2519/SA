@@ -185,7 +185,7 @@ class LineActivity : AppCompatActivity() {
             value = pontuacao.toFloat()
         }
 
-        lineDataSet1 = LineDataSet(linelist,"Pontos")
+        lineDataSet1 = LineDataSet(linelist,"Points")
         lineDataSet1.color=Color.parseColor("#E63C3A")
         lineDataSet1.setCircleColor(Color.parseColor("#E63C3A")) // Define a cor dos pontos
         lineDataSet1.valueTextColor= Color.parseColor(cor)
@@ -197,7 +197,7 @@ class LineActivity : AppCompatActivity() {
         linelist2.add(Entry((position-1).toFloat(),value))
         linelist2.add(Entry((position).toFloat(),estimativaProximaPontuacao(pontuação)))
 
-        lineDataSet2 = LineDataSet(linelist2,"Previsão")
+        lineDataSet2 = LineDataSet(linelist2,"Prediction")
         lineDataSet2.color=Color.BLUE
         lineDataSet2.setCircleColor(Color.BLUE) // Define a cor dos pontos
         lineDataSet2.valueTextColor= Color.parseColor(cor)

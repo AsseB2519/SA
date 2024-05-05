@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.github.mikephil.charting.charts.RadarChart
@@ -190,11 +191,9 @@ class RadarActivity : AppCompatActivity() {
         dataSet1.setDrawFilled(true)
         dataSet1.setFillColor(Color.RED)
 
+        radarChart.data = RadarData(dataSet1)
+
         setupRadarChart(cor)
-
-        val data = RadarData(dataSet1)
-
-        radarChart.data = data
 
         radarChart.invalidate() // Atualiza o gráfico
     }
@@ -215,27 +214,8 @@ class RadarActivity : AppCompatActivity() {
         radarChart.webAlpha = 100 // Transparência das linhas do gráfico
         radarChart.yAxis.isEnabled=false
         radarChart.animateXY(1000,1000)
+        radarChart.yAxis.setLabelCount(10, true);
 
-    }
-
-    suspend fun obterNomeDoUsuario(documentoId: String): String? {
-        return suspendCoroutine { continuation ->
-            db.collection("users").document(documentoId).get().addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    val nome = documentSnapshot.getString("nome")
-                    val apelido = documentSnapshot.getString("apelido")
-                    // Faça algo com o nome, como exibir ou retornar
-                    val nomeCompleto = nome + " "+ apelido
-                    continuation.resume(nomeCompleto)
-                } else {
-                    // O documento não existe
-                    continuation.resumeWith(Result.success("falhou"))
-                }
-            }.addOnFailureListener { exception ->
-                // Tratar falha ao obter o documento
-                continuation.resumeWithException(exception)
-            }
-        }
     }
 
     suspend fun buscarDocumentosUsuarios(): List<Pair<String, Map<String, Any>>> {

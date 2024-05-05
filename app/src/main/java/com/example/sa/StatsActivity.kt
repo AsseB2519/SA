@@ -12,9 +12,11 @@ import androidx.core.view.WindowInsetsCompat
 import com.anychart.AnyChart
 import com.anychart.AnyChartView
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
@@ -96,6 +98,7 @@ class StatsActivity : AppCompatActivity() {
         }
 
         val dataSet = PieDataSet(dados, "Pie Chart")
+        dataSet.setDrawValues(true)
         dataSet.setValueTextSize(18f)
         val customColors = listOf(Color.parseColor("#F70316"), Color.parseColor("#91908D"),
             Color.parseColor("#5E5D83"))
@@ -104,6 +107,22 @@ class StatsActivity : AppCompatActivity() {
 
         val pieData = PieData(dataSet)
         pieChart.data = pieData
+
+        // Adicionar um ouvinte para detectar cliques em fatias do gráfico
+        pieChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                if (e == null) return
+                val valorAbsoluto = e.y.toInt() // Obter o valor absoluto da fatia selecionada
+                // val label = e.label Obter a label da fatia selecionada
+                val label = (e as PieEntry).label // Obter o nome da fatia selecionada
+                val mensagem = "You did : $valorAbsoluto $label"
+                Toast.makeText(applicationContext, mensagem, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected() {
+                // Este método é chamado quando nenhuma fatia é selecionada
+            }
+        })
 
         pieChart.invalidate() // Atualiza o gráfico
     }

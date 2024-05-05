@@ -103,7 +103,7 @@ class BoxActivity : AppCompatActivity() {
             // Pare de coletar os dados do acelerômetro
             sensorManager.unregisterListener(accelerometerSensorListener)
             sensorManager.unregisterListener(gyroscopeSensorListener)
-            lerDocs(novoSocoId)
+            ler2Docs(novoSocoId)
         }
 
         val currentUser = auth.currentUser
@@ -155,46 +155,112 @@ class BoxActivity : AppCompatActivity() {
 
     }
 
-    private fun lerDocs(novoSocoId:String){
+
+    private fun ler2Docs(novoSocoId:String) {
+        // Primeira coleção
         db.collection("Box").document(novoSocoId)
             .collection("AccelerometerData")
             .orderBy("timestamp") // Ordenar os documentos pelo campo "timestamp"
             .get()
-            .addOnSuccessListener { result ->
-                val listaDeDados=result.toObjects<AccelerometerData>()
-                Log.w("User555", "Cheguei aqui")
-                val pontuacao = calcularpontuacao(listaDeDados,novoSocoId)
-                animarPontuacao(800)
+            .addOnSuccessListener { result1 ->
+                val listaDeDados1 = result1.toObjects<AccelerometerData>()
 
+                // Segunda coleção
+                db.collection("Box").document(novoSocoId)
+                    .collection("GyroscopeData")
+                    .orderBy("timestamp") // Ordenar os documentos pelo campo "timestamp"
+                    .get()
+                    .addOnSuccessListener { result2 ->
+                        val listaDeDados2 = result2.toObjects<GyroscopeData>()
+
+                        // Calcular pontuação com base nas duas listas de dados
+                        val pontuacao = calcularpontuacao(listaDeDados1, listaDeDados2, novoSocoId)
+                        animarPontuacao(pontuacao) // Assumindo que a função animarPontuacao espera um valor de pontuação
+
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w("User555", "Error getting documents from second collection.", exception)
+                    }
             }
             .addOnFailureListener { exception ->
-                Log.w("User555", "Error getting documents.", exception)
+                Log.w("User555", "Error getting documents from first collection.", exception)
             }
     }
 
-    private fun calcularpontuacao(listaDeDados:List<AccelerometerData>,novoSocoId:String):Int{
-        var res  = 800
-        var maxF = 0.0f
-        for (aux in listaDeDados){
-            var f = sqrt(aux.accelerometerX*aux.accelerometerX+aux.accelerometerY
-                    *aux.accelerometerY+aux.accelerometerZ*aux.accelerometerZ)
-            if (f>maxF){maxF=f}
+    private fun maxValorAcelerometro(listaDeDados:List<AccelerometerData>):Int{
+
+        var max: Float? = null
+        var indice:Int=0
+
+        for (i in listaDeDados.indices) {
+            val valor = listaDeDados[i].accelerometerY
+            if (valor > 0) {
+                if (max == null || valor > max){
+                    max = valor
+                    indice=i
+                }
+            }
         }
 
-        res= (maxF * 30).toInt()
+        return indice
+    }
 
-        // Atualiza o campo desejado
+    private fun maxValorGiroscopio(listaDeDados:List<GyroscopeData>):Int{
+
+        var max: Float? = null
+        var indice:Int=0
+
+        for (i in listaDeDados.indices) {
+            val valor = Math.abs(listaDeDados[i].valueY)
+            if (valor > 0) {
+                if (max == null || valor > max){
+                    max = valor
+                    indice=i
+                }
+            }
+        }
+
+        return indice
+
+    }
+
+    private fun calcularpontuacao(listaDeDadosA:List<AccelerometerData>, listaDeDadosG:List<GyroscopeData>, novoSocoId:String):Int{
+        var pontos  = 800
+
+        // Encontre o elemento com o menor valor de accelerometerX
+        val auxA = maxValorAcelerometro(listaDeDadosA)
+        val auxG = maxValorGiroscopio(listaDeDadosG)
+        val accelerometerData = listaDeDadosA[auxA]
+        val gyroscopeValue = listaDeDadosG[auxG]
+
+        var fA = sqrt(accelerometerData.accelerometerX*accelerometerData.accelerometerX+accelerometerData.accelerometerY
+                *accelerometerData.accelerometerY+accelerometerData.accelerometerZ*accelerometerData.accelerometerZ)
+        var fG = sqrt(gyroscopeValue.valueX *gyroscopeValue.valueX+gyroscopeValue.valueY
+                *gyroscopeValue.valueY+gyroscopeValue.valueZ*gyroscopeValue.valueZ)
+        pontos = (fA * fG * 35).toInt() // *massa
+
         // Referência para o documento que você deseja atualizar
         val docRef = db.collection("Box").document(novoSocoId)
+
+        // Atualiza o campo desejado
         docRef
-            .update("força", maxF)
+            .update("força", fA*fG)
             .addOnSuccessListener {
                 // Sucesso ao atualizar o campo
             }
             .addOnFailureListener { e ->
                 // Tratamento de erro
             }
-        return res
+        docRef
+            .update("pontuação", pontos*fG)
+            .addOnSuccessListener {
+                // Sucesso ao atualizar o campo
+            }
+            .addOnFailureListener { e ->
+                // Tratamento de erro
+            }
+
+        return pontos
     }
 
     private fun animarPontuacao(pontuacao:Int) {

@@ -134,7 +134,7 @@
                 android:id="@+id/textView3"
                 android:layout_width="112dp"
                 android:layout_height="32dp"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/firebrand"
                 android:text="Daily Goal"
@@ -172,107 +172,99 @@
                 app:layout_constraintTop_toBottomOf="@+id/pieChart"
                 app:layout_constraintVertical_bias="0.246" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout2"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="121dp"
-                android:layout_height="47dp"
-                app:boxStrokeColor="@color/corterciaria"
-                android:textColorHint="@color/corsecundaria"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="MissingConstraints">
-
-                <AutoCompleteTextView
-                    android:id="@+id/auto_complete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/item_label"
-                    android:textColor="@color/corsecundaria"
-                    android:textColorHint="@color/corsecundaria"
-                    android:inputType="none" />
-            </com.google.android.material.textfield.TextInputLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout4"
-            android:layout_width="206dp"
-            android:layout_height="154dp"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/constraintLayout3"
-
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/imageView6"
-                android:layout_width="77dp"
-                android:layout_height="57dp"
-                android:background="@drawable/rounded_background"
-                android:backgroundTint="@color/corprimaria"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageView8"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.309"
-                app:srcCompat="@drawable/baseline_leaderboard_24" />
-
-            <ImageView
-                android:id="@+id/imageView8"
-                android:layout_width="77dp"
-                android:layout_height="57dp"
-                android:background="@drawable/rounded_background"
-                android:backgroundTint="@color/corprimaria"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.705"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.752"
-                app:srcCompat="@drawable/baseline_leaderboard_24" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="131dp"
-            android:layout_height="114dp"
-            android:background="@drawable/rounded_background"
-            android:backgroundTint="@color/corterciaria"
+            android:layout_width="208dp"
+            android:layout_height="328dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintStart_toEndOf="@+id/constraintLayout3"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
-            app:layout_constraintVertical_bias="0.444">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/Checkactivities"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Total Activities"
-                android:textColor="@color/white"
-                android:textSize="18dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="28dp"
+                android:fontFamily="@font/firebrand"
+                android:text="Check Activities"
+                android:textColor="@color/corsecundaria"
+                android:textSize="28dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/stats_button"
+                android:layout_width="76dp"
+                android:layout_height="63dp"
+                android:background="@drawable/rounded_background"
+                android:backgroundTint="@color/corprimaria"
+                app:layout_constraintBottom_toTopOf="@+id/constraintLayout12"
+                app:layout_constraintEnd_toStartOf="@+id/radar_button"
+                app:layout_constraintHorizontal_bias="0.695"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Checkactivities"
+                app:layout_constraintVertical_bias="0.382"
+                app:srcCompat="@drawable/piechart" />
+
+            <ImageView
+                android:id="@+id/radar_button"
+                android:layout_width="76dp"
+                android:layout_height="63dp"
+                android:background="@drawable/rounded_background"
+                android:backgroundTint="@color/corsecundaria"
+                app:layout_constraintBottom_toTopOf="@+id/constraintLayout12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.75"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Checkactivities"
+                app:layout_constraintVertical_bias="0.382"
+                app:srcCompat="@drawable/radartry" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout12"
+                android:layout_width="154dp"
+                android:layout_height="95dp"
+                android:layout_marginBottom="88dp"
+                android:background="@drawable/rounded_background"
+                android:backgroundTint="@color/corterciaria"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintHorizontal_bias="0.296"
+                app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/activities"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:text="0"
-                android:textColor="@color/white"
-                android:textSize="32dp"
-                app:layout_constraintBottom_toTopOf="@+id/textView11"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.495"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="Total Activities"
+                    android:textColor="@color/white"
+                    android:textSize="18dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
+                <TextView
+                    android:id="@+id/activities"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="32dp"
+                    app:layout_constraintBottom_toTopOf="@+id/textView11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.495"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

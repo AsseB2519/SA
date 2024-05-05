@@ -77,7 +77,7 @@ class MenuActivity : AppCompatActivity() {
         head.findViewById<TextView>(R.id.email).text=auth.currentUser?.email
 
         val sports = listOf("Line","stats","Radar","Leader")
-        
+        /*
         val autoComplete : AutoCompleteTextView=findViewById(R.id.auto_complete)
         
         val adapter = ArrayAdapter(this,R.layout.list_item,sports)
@@ -107,26 +107,33 @@ class MenuActivity : AppCompatActivity() {
                 intent.putExtra("colecao", "Jump")
                 startActivity(intent)
             }
-        }
+        }*/
 
 
         val currentUser = auth.currentUser
 
         findViewById<ImageView>(R.id.imageView3).setOnClickListener{
-            Log.d("BUTTON", "Stop button pressed!")
             val intent = Intent(this, BoxActivity::class.java)
             startActivity(intent)
         }
 
         findViewById<ImageView>(R.id.imageView5).setOnClickListener{
-            Log.d("BUTTON", "Siga saltar")
             val intent = Intent(this, JumpActivity::class.java)
             startActivity(intent)
         }
 
         findViewById<ImageView>(R.id.imageView4).setOnClickListener{
-            Log.d("BUTTON", "Siga saltar")
             val intent = Intent(this, ShootActivity::class.java)
+            startActivity(intent)
+        }
+
+        findViewById<ImageView>(R.id.radar_button).setOnClickListener{
+            val intent = Intent(this, RadarActivity::class.java)
+            startActivity(intent)
+        }
+
+        findViewById<ImageView>(R.id.stats_button).setOnClickListener{
+            val intent = Intent(this, StatsActivity::class.java)
             startActivity(intent)
         }
 
@@ -138,6 +145,10 @@ class MenuActivity : AppCompatActivity() {
                 }
                 R.id.nav_settings -> {
                     //supportFragmentManager.beginTransaction().replace(R.id.fragment_container, SettingsFragment()).commit()
+                }
+                R.id.nav_profile->{
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    startActivity(intent)
                 }
                 R.id.nav_logout -> {
                     Toast.makeText(this, "Logout!", Toast.LENGTH_SHORT).show()
