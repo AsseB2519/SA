@@ -26,8 +26,10 @@ import android.os.Handler
 import android.os.Vibrator
 import android.widget.ImageView
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import java.math.BigDecimal
+import kotlin.properties.Delegates
 
 class JumpActivity : AppCompatActivity() {
 
@@ -163,15 +165,15 @@ class JumpActivity : AppCompatActivity() {
                 val listaDeDados=result.toObjects<AccelerometerData>()
 
                 val pontuacao = calcularpontuacao(listaDeDados,novoSaltoId)
-                animarPontuacao(800)
+                animarPontuacao(pontuacao)
 
             }
             .addOnFailureListener { exception ->
                 Log.w("User555", "Error getting documents.", exception)
             }
 
-
     }
+
 
     fun maxNegativoAntesDeSubir(listaDeDados: List<AccelerometerData>): AccelerometerData? {
         var maxNegativo: Float? = null
@@ -199,7 +201,7 @@ class JumpActivity : AppCompatActivity() {
     }
 
     private fun calcularpontuacao(listaDeDados:List<AccelerometerData>,novoSaltoId:String):Int{
-        var pontos  = 800
+        var pontos  = 0
         var jumpHeight = 0f
         var velocity = 0f
         var lastTimeStamp = listaDeDados.first().timestamp
@@ -235,6 +237,7 @@ class JumpActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 // Tratamento de erro
             }
+
         docRef
             .update("pontuação", pontos)
             .addOnSuccessListener {

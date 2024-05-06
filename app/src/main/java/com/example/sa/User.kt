@@ -1,15 +1,17 @@
 package com.example.sa
 
 data class User (
-    var first : String = "",
-    var last : String = "",
-    var born : Int = 0
+    var nome : String = "",
+    var apelido : String = "",
+    var idade : String = "",
+    var peso : String = ""
 ) {
 
     private fun copy(): User {
-        val first = this.first
-        val last = this.last
-        val born = this.born
-        return User(first, last, born)
+        val nome = this.nome
+        val apelido = this.apelido
+        val idade = this.idade
+        val peso = this.peso
+        return User(nome, apelido, idade,peso)
     }
 }

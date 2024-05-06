@@ -27,9 +27,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import java.math.BigDecimal
 import kotlin.math.sqrt
+import kotlin.properties.Delegates
 
 class BoxActivity : AppCompatActivity() {
 
@@ -38,6 +40,7 @@ class BoxActivity : AppCompatActivity() {
     private lateinit var mediaPlayerbip: MediaPlayer
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
+    private var peso by Delegates.notNull<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +51,8 @@ class BoxActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth
         auth = com.google.firebase.ktx.Firebase.auth
+
+        auth.uid?.let { lerpeso(it) }
 
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
@@ -185,6 +190,27 @@ class BoxActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.w("User555", "Error getting documents from first collection.", exception)
             }
+    }
+
+    private fun lerpeso(novoSaltoId: String) {
+        auth.uid?.let {
+            db.collection("users").document(it) // Ordenar os documentos pelo campo "timestamp"
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        val usuario = documentSnapshot.toObject<User>() // Classe Usuario
+                        peso = (usuario?.peso?: 0.0).toString().toInt() // Peso do usuário (se existir)
+
+                        // Use o pesoUsuario para o cálculo da pontuação ou outras ações
+                        Log.d("Peso", "User $peso")
+                    } else {
+                        Log.d("User555", "User document not found for ID:")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w("User555", "Error getting user document.", exception)
+                }
+        }
     }
 
     private fun maxValorAcelerometro(listaDeDados:List<AccelerometerData>):Int{

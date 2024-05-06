@@ -54,8 +54,8 @@
         app:boxStrokeColor="@color/corsecundaria"
         app:hintTextColor="@color/corsecundaria">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/altura"
-            android:hint="Altura"
+            android:id="@+id/idade"
+            android:hint="Idade"
             android:backgroundTint="@color/corsecundaria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

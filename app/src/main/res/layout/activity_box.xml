@@ -122,7 +122,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout8"
         android:layout_width="match_parent"
-        android:layout_height="133dp"
+        android:layout_height="271dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,94 +132,70 @@
 
         <Button
             android:id="@+id/startbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
             android:backgroundTint="@color/corterciaria"
             android:text="@string/start"
             android:textColor="@color/white"
+            android:textSize="26dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.494" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintVertical_bias="0.785" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="139dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout8">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout9"
-            android:layout_width="197dp"
-            android:layout_height="143dp"
-            android:layout_marginEnd="214dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/constraintLayout10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="60dp"
-                android:layout_marginTop="112dp"
-                android:text="Progression"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/progression"
-                android:layout_width="101dp"
-                android:layout_height="92dp"
-                android:background="@drawable/rounded_background"
-                android:backgroundTint="@color/corsecundaria"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.296"
-                app:srcCompat="@drawable/baseline_query_stats_24" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout10"
-            android:layout_width="213dp"
-            android:layout_height="143dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <ImageView
+            android:id="@+id/top5"
+            android:layout_width="101dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/rounded_background"
+            android:backgroundTint="@color/corsecundaria"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintHorizontal_bias="0.689"
+            app:layout_constraintStart_toEndOf="@+id/progression"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_leaderboard_24" />
 
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="88dp"
-                android:layout_marginTop="108dp"
-                android:text="Top 5"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/progression"
+            android:layout_width="101dp"
+            android:layout_height="92dp"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/rounded_background"
+            android:backgroundTint="@color/corsecundaria"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_query_stats_24" />
 
-            <ImageView
-                android:id="@+id/top5"
-                android:layout_width="101dp"
-                android:layout_height="92dp"
-                android:background="@drawable/rounded_background"
-                android:backgroundTint="@color/corsecundaria"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.504"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.355"
-                app:srcCompat="@drawable/baseline_leaderboard_24" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="84dp"
+            android:text="Top 5"
+            android:textColor="@color/white"
+
+            app:layout_constraintBottom_toTopOf="@+id/startbox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top5"
+            app:layout_constraintVertical_bias="0.065" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginTop="8dp"
+            android:text="Progression"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/startbox"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/progression"
+            app:layout_constraintVertical_bias="0.031" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

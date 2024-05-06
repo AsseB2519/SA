@@ -258,12 +258,12 @@ class MenuActivity : AppCompatActivity() {
         pieChart.data = pieData
         pieChart.description.isEnabled = false // Desativa a descrição
         pieChart.legend.isEnabled = false // Desativa a legenda
-        pieChart.centerText = "$percentReached%" // Texto central exibindo a porcentagem atingida
+        pieChart.centerText = "${percentReached*100/goal}%" // Texto central exibindo a porcentagem atingida
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.setDrawEntryLabels(false)
         pieChart.setTransparentCircleColor(Color.TRANSPARENT) // Cor da borda do buraco central (transparente para não mostrar)
         pieChart.setCenterTextColor(Color.WHITE)
-
+        findViewById<TextView>(R.id.textView6).text = "You did ${percentReached.toInt()} of your 10 activities goal"
         pieChart.invalidate() // Atualiza o gráfico
     }
 

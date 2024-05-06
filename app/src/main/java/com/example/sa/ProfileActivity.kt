@@ -32,7 +32,7 @@ class ProfileActivity : AppCompatActivity() {
         binding?.register?.setOnClickListener{
             val nome:String = binding?.nome?.text.toString()
             val apelido:String = binding?.apelido?.text.toString()
-            val idade:String = binding?.altura?.text.toString()
+            val idade:String = binding?.idade?.text.toString()
             val peso:String = binding?.peso?.text.toString()
 
             setUser(nome,apelido,idade,peso)
