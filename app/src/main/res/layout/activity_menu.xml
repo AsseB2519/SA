@@ -163,7 +163,7 @@
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You did 10 of your 10 activities goal"
+                android:text=""
                 android:textColor="@color/corsecundaria"
                 android:textSize="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"

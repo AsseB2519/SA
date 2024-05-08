@@ -50,6 +50,14 @@ class JumpActivity : AppCompatActivity() {
         auth = com.google.firebase.ktx.Firebase.auth
 
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("How to play")
+        builder.setMessage("After clicking the start button, place the smartphone in your pocket with the screen facing out.")
+
+        findViewById<ImageView>(R.id.help).setOnClickListener{
+            val alert = builder.create()
+            alert.show()
+        }
 
         findViewById<Button>(R.id.startjump).setOnClickListener {
             object : CountDownTimer(5000, 1000) {

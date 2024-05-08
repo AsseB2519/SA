@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -28,6 +29,7 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import java.math.BigDecimal
+import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.properties.Delegates
 
@@ -53,6 +55,14 @@ class ShootActivity : AppCompatActivity() {
         auth.uid?.let { lerpeso(it) }
 
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("How to play")
+        builder.setMessage("After clicking the start button, place the smartphone in your pocket with the screen facing out.")
+
+        findViewById<ImageView>(R.id.help).setOnClickListener{
+            val alert = builder.create()
+            alert.show()
+        }
 
         findViewById<Button>(R.id.startshoot).setOnClickListener {
             object : CountDownTimer(5000, 1000) {
@@ -240,7 +250,7 @@ class ShootActivity : AppCompatActivity() {
         var indice:Int=0
 
         for (i in listaDeDados.indices) {
-            val valor = Math.abs(listaDeDados[i].valueY)
+            val valor = abs(listaDeDados[i].gyroscopeY)
             if (valor > 0) {
                 if (max == null || valor > max){
                     max = valor
@@ -264,16 +274,17 @@ class ShootActivity : AppCompatActivity() {
 
         var fA = sqrt(accelerometerData.accelerometerX*accelerometerData.accelerometerX+accelerometerData.accelerometerY
                 *accelerometerData.accelerometerY+accelerometerData.accelerometerZ*accelerometerData.accelerometerZ)
-        var fG = sqrt(gyroscopeValue.valueX *gyroscopeValue.valueX+gyroscopeValue.valueY
-                *gyroscopeValue.valueY+gyroscopeValue.valueZ*gyroscopeValue.valueZ)
-        pontos = (fA * fG * 50).toInt() // *massa
+        var fG = sqrt(gyroscopeValue.gyroscopeX *gyroscopeValue.gyroscopeX+gyroscopeValue.gyroscopeY
+                *gyroscopeValue.gyroscopeY+gyroscopeValue.gyroscopeZ*gyroscopeValue.gyroscopeZ)
+        val forca = (fA * fG * peso*0.17) // *massa
+        pontos=calcularPontuacaocomF(forca)
 
         // Referência para o documento que você deseja atualizar
         val docRef = db.collection("Shoot").document(novoRemateId)
 
         // Atualiza o campo desejado
         docRef
-            .update("força", fA*fG)
+            .update("força", forca)
             .addOnSuccessListener {
                 // Sucesso ao atualizar o campo
             }
@@ -290,6 +301,19 @@ class ShootActivity : AppCompatActivity() {
             }
 
         return pontos
+    }
+
+    fun calcularPontuacaocomF(forca: Double): Int {
+        return when {
+            forca <= 0 -> 0
+            forca >= 3600-> 999
+            else -> {
+                // Aqui você pode definir uma relação entre a altura do salto e a pontuação
+                // por exemplo, você pode usar uma função linear, exponencial, etc.
+                val pontuacao = (forca*0.2775).toInt() // Ajustado para o máximo de 1.3 metros
+                pontuacao
+            }
+        }
     }
 
     private fun animarPontuacao(pontuacao:Int) {

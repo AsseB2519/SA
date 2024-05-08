@@ -28,25 +28,25 @@ class GyroscopeSensorListener: SensorEventListener {
     override fun onSensorChanged(event: SensorEvent) {
 
         val GyroscopeData = GyroscopeData(
-            valueX = event.values[0],
-            valueY = event.values[1],
-            valueZ = event.values[2],
+            gyroscopeX = event.values[0],
+            gyroscopeY = event.values[1],
+            gyroscopeZ = event.values[2],
             accuracy = event.accuracy,
             timestamp = event.timestamp
         )
 
         //sensorManager.unregisterListener(this)
         ourGyroscopeViewModel.currentGyroscopeData.value = GyroscopeData
-        Log.d(TAG,"[SENSOR] - X=${GyroscopeData.valueX},Y=${GyroscopeData.valueY}," +
-                "Z=${GyroscopeData.valueZ}")
+        Log.d(TAG,"[SENSOR] - X=${GyroscopeData.gyroscopeX},Y=${GyroscopeData.gyroscopeY}," +
+                "Z=${GyroscopeData.gyroscopeZ}")
 
         val db = Firebase.firestore
 
         // Create a new user with a first and last name
         val gyroscope = hashMapOf(
-            "gyroscopeX" to GyroscopeData.valueX,
-            "gyroscopeY" to GyroscopeData.valueY,
-            "gyroscopeZ" to GyroscopeData.valueZ,
+            "gyroscopeX" to GyroscopeData.gyroscopeX,
+            "gyroscopeY" to GyroscopeData.gyroscopeY,
+            "gyroscopeZ" to GyroscopeData.gyroscopeZ,
             "timestamp" to GyroscopeData.timestamp
         )
 

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/jump_back2"
+    android:background="@drawable/jump_back2_t"
     tools:context=".JumpActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,8 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Jump"
+            android:textStyle="bold"
             android:textColor="@color/corterciaria"
-            android:textSize="42dp"
+            android:textSize="46dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +48,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="185dp"
             android:layout_height="118dp"
-            android:background="@drawable/rounded_background"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,11 +59,12 @@
                 android:id="@+id/Pontuação"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
-                android:text="Pontuação"
-                android:textColor="@color/corquinta"
-                android:textSize="28dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="16dp"
+                android:text="Score"
+                android:textColor="@color/white"
+                android:textSize="38dp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,6 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="000"
+                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:textSize="32dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -93,9 +96,10 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout9"
             android:layout_width="108dp"
             android:layout_height="67dp"
-            android:background="@drawable/rounded_background"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -106,17 +110,31 @@
                 android:id="@+id/timerdisplay"
                 android:layout_width="101dp"
                 android:layout_height="56dp"
-                android:background="@drawable/rounded_background"
                 android:backgroundTint="@color/corsecundaria"
                 android:text="00:05"
                 android:textColor="@color/white"
                 android:textSize="36sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.571"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/help"
+            android:layout_width="41dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="96dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.548"
+            app:layout_constraintStart_toEndOf="@+id/constraintLayout9"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.551"
+            app:srcCompat="@drawable/baseline_help_outline_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -150,7 +168,6 @@
             android:layout_width="101dp"
             android:layout_height="92dp"
             android:layout_marginTop="28dp"
-            android:background="@drawable/rounded_background"
             android:backgroundTint="@color/corsecundaria"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.689"
@@ -164,7 +181,7 @@
             android:layout_height="92dp"
             android:layout_marginStart="44dp"
             android:layout_marginTop="28dp"
-            android:background="@drawable/rounded_background"
+
             android:backgroundTint="@color/corsecundaria"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -177,11 +194,13 @@
             android:layout_marginEnd="84dp"
             android:text="Top 5"
             android:textColor="@color/white"
-
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/startjump"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/textView7"
             app:layout_constraintTop_toBottomOf="@+id/top5"
-            app:layout_constraintVertical_bias="0.065" />
+            app:layout_constraintVertical_bias="0.3" />
 
         <TextView
             android:id="@+id/textView7"
@@ -191,6 +210,7 @@
             android:layout_marginTop="8dp"
             android:text="Progression"
             android:textColor="@color/white"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/startjump"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/progression"

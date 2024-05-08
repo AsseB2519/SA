@@ -235,6 +235,15 @@ class MenuActivity : AppCompatActivity() {
         percentReached = auth.uid?.let { contarDocumentosPorUserHoje(it).toFloat() }!!
         val goal = 10f // Objetivo
 
+        if (percentReached>goal) {
+            findViewById<TextView>(R.id.textView6).text =
+                "Congratulations, you achieved your daily goal"
+            percentReached=goal
+        }else{
+            findViewById<TextView>(R.id.textView6).text =
+                "You did ${percentReached.toInt()} of your 10 activities goal"
+        }
+
         // Calcula a porcentagem restante
         val percentRemaining = goal - percentReached
 
@@ -263,7 +272,6 @@ class MenuActivity : AppCompatActivity() {
         pieChart.setDrawEntryLabels(false)
         pieChart.setTransparentCircleColor(Color.TRANSPARENT) // Cor da borda do buraco central (transparente para não mostrar)
         pieChart.setCenterTextColor(Color.WHITE)
-        findViewById<TextView>(R.id.textView6).text = "You did ${percentReached.toInt()} of your 10 activities goal"
         pieChart.invalidate() // Atualiza o gráfico
     }
 
