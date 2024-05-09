@@ -40,7 +40,7 @@ class ShootActivity : AppCompatActivity() {
     private lateinit var mediaPlayerbip: MediaPlayer
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
-    private var peso by Delegates.notNull<Int>()
+    private var peso by Delegates.notNull<Float>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -212,7 +212,7 @@ class ShootActivity : AppCompatActivity() {
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
                         val usuario = documentSnapshot.toObject<User>() // Classe Usuario
-                        peso = (usuario?.peso?: 0.0).toString().toInt() // Peso do usuário (se existir)
+                        peso = (usuario?.peso?: 0.0).toString().toFloat() // Peso do usuário (se existir)
 
                         // Use o pesoUsuario para o cálculo da pontuação ou outras ações
                         Log.d("Peso", "User $peso")
