@@ -57,7 +57,7 @@ class ShootActivity : AppCompatActivity() {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         val builder = AlertDialog.Builder(this)
         builder.setTitle("How to play")
-        builder.setMessage("After clicking the start button, place the smartphone in your pocket with the screen facing out.")
+        builder.setMessage("After clicking the start button, place the smartphone upright in your pocket with the screen facing out.")
 
         findViewById<ImageView>(R.id.help).setOnClickListener{
             val alert = builder.create()
