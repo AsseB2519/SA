@@ -284,7 +284,7 @@ class BoxActivity : AppCompatActivity() {
             forca <= 0 -> 0
             forca >= 1800 -> 999
             else -> {
-                val pontuacao = (forca*0.555).toInt() // Ajustado para o máximo de 1.3 metros
+                val pontuacao = (forca*0.555).toInt()
                 pontuacao
             }
         }
@@ -293,7 +293,7 @@ class BoxActivity : AppCompatActivity() {
     private fun animarPontuacao(pontuacao:Int) {
 
         val animator = ValueAnimator.ofInt(0, pontuacao)
-        animator.duration = 2000 // Duração da animação em milissegundos
+        animator.duration = 2000
 
         animator.addUpdateListener { animation ->
             val valorAtual = animation.animatedValue as Int
