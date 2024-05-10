@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize Firebase Auth
         auth = Firebase.auth
         val currentUser = auth.currentUser
         Log.w("User666","${currentUser?.email}")
