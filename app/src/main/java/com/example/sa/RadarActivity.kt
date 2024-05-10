@@ -48,7 +48,7 @@ class RadarActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        // Initialize Firebase Auth
+
         auth = com.google.firebase.ktx.Firebase.auth
 
         val userId = auth.uid
@@ -71,7 +71,7 @@ class RadarActivity : AppCompatActivity() {
     }
 
     private suspend fun aux(){
-        // Lista de opções para o Spinner
+
         val documentos = buscarDocumentosUsuarios()
 
         val mapNomeApelidoParaId = documentos.associate { (id, info) ->
@@ -84,16 +84,14 @@ class RadarActivity : AppCompatActivity() {
             addAll(mapNomeApelidoParaId.keys)
         }
 
-        // Criar um adaptador para o Spinner
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcoes)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        // Definir o adaptador para o Spinner
         spinner.adapter = adapter
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Faça algo com o item selecionado, por exemplo:
+
                 val itemSelecionado = opcoes[position]
 
                 if (itemSelecionado != "None") {
@@ -117,16 +115,15 @@ class RadarActivity : AppCompatActivity() {
                         dataSet2.valueTextColor = Color.parseColor(cor)
                         dataSet2.valueTextSize = 12f
                         dataSet2.setDrawFilled(true)
-                        dataSet2.setFillColor(Color.BLUE) // Define a cor do preenchimento
+                        dataSet2.setFillColor(Color.BLUE)
 
                         radarChart.data.addDataSet(dataSet2)
                         radarChart.data.notifyDataChanged()
                         radarChart.notifyDataSetChanged()
-                        radarChart.invalidate() // Atualiza o gráfico
+                        radarChart.invalidate()
                     }
                 }
                 else{
-                    // Remover conjuntos de dados do índice especificado em diante
                     for (i in  radarChart.data.dataSetCount - 1 downTo 1) {
                         val dataSetToRemove =  radarChart.data.getDataSetByIndex(i)
                         radarChart.data.removeDataSet(dataSetToRemove)
@@ -135,14 +132,11 @@ class RadarActivity : AppCompatActivity() {
                     radarChart.notifyDataSetChanged()
                     setupRadarChart("#91908D")
 
-                    radarChart.invalidate() // Atualiza o gráfico
+                    radarChart.invalidate()
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Método necessário, mas pode ser deixado em branco
-
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
@@ -156,7 +150,7 @@ class RadarActivity : AppCompatActivity() {
             val snapshot = query.get().await()
             val documento = snapshot.documents.firstOrNull()
 
-            documento?.getLong("pontuação") ?: 0 // Se não houver pontuação, retorna 0
+            documento?.getLong("pontuação") ?: 0
         } catch (e: Exception) {
             Log.e("Firestore", "Erro ao obter documentos: $e")
             0
@@ -164,7 +158,7 @@ class RadarActivity : AppCompatActivity() {
     }
 
     private suspend fun obterMaiorPontuacaoPorUsuario(userId: String): Map<String, Long> {
-        val colecoes = listOf("Box", "Jump", "Shoot") // Substitua pelos nomes reais das suas coleções
+        val colecoes = listOf("Box", "Jump", "Shoot")
         val maiorPontuacaoPorColecao = mutableMapOf<String, Long>()
 
         for (colecao in colecoes) {
@@ -178,7 +172,6 @@ class RadarActivity : AppCompatActivity() {
     private fun configurarGrafico(pontuação: Map<String, Long>) {
 
         val cor = "#91908D"
-        // Sample data
         val entries1 = ArrayList<RadarEntry>()
         entries1.add(RadarEntry(pontuação["Box"]?.toFloat()?:0f))
         entries1.add(RadarEntry(pontuação["Jump"]?.toFloat()?:0f))
@@ -195,7 +188,7 @@ class RadarActivity : AppCompatActivity() {
 
         setupRadarChart(cor)
 
-        radarChart.invalidate() // Atualiza o gráfico
+        radarChart.invalidate()
     }
 
     private fun setupRadarChart(cor:String) {
@@ -206,12 +199,12 @@ class RadarActivity : AppCompatActivity() {
         radarChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
         radarChart.xAxis.textColor = Color.parseColor(cor)
         radarChart.xAxis.textSize = 16f
-        radarChart.description.isEnabled = false // Desativa a descrição
-        radarChart.webLineWidth = 2f // Largura das linhas do gráfico
-        radarChart.webColor = Color.parseColor(cor) // Cor das linhas do gráfico
-        radarChart.webLineWidthInner = 2f // Largura das linhas internas do gráfico
-        radarChart.webColorInner = Color.parseColor(cor) // Cor das linhas internas do gráfico
-        radarChart.webAlpha = 100 // Transparência das linhas do gráfico
+        radarChart.description.isEnabled = false
+        radarChart.webLineWidth = 2f
+        radarChart.webColor = Color.parseColor(cor)
+        radarChart.webLineWidthInner = 2f
+        radarChart.webColorInner = Color.parseColor(cor)
+        radarChart.webAlpha = 100
         radarChart.yAxis.isEnabled=false
         radarChart.animateXY(1000,1000)
         radarChart.yAxis.setLabelCount(10, true);
