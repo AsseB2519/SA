@@ -24,7 +24,6 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
-        //setContentView(R.layout.activity_register)
         setContentView(binding?.root)
 
         auth = Firebase.auth
@@ -47,10 +46,8 @@ class ProfileActivity : AppCompatActivity() {
             "idade" to idade,
             "apelido" to apelido,
             "peso" to peso
-            // Adicione mais campos conforme necessário
         )
 
-        // Add a new document with a generated ID
         db.collection("users").document(user!!.uid)
             .set(dadosDoUsuario)
             .addOnSuccessListener { documentReference ->
