@@ -35,14 +35,12 @@ class AccelerometerSensorListener: SensorEventListener {
             timestamp = event.timestamp
         )
 
-        //sensorManager.unregisterListener(this)
         ourAccelerometerViewModel.currentAccelerometerData.value = accelerometerData
         Log.d(TAG,"[SENSOR] - X=${accelerometerData.accelerometerX},Y=${accelerometerData.accelerometerY}," +
                 "Z=${accelerometerData.accelerometerZ}")
 
         val db = Firebase.firestore
 
-        // Create a new user with a first and last name
         val accelerometer = hashMapOf(
             "accelerometerX" to accelerometerData.accelerometerX,
             "accelerometerY" to accelerometerData.accelerometerY,
@@ -50,7 +48,6 @@ class AccelerometerSensorListener: SensorEventListener {
             "timestamp" to accelerometerData.timestamp
         )
 
-        // Add a new document with a generated ID
         db.collection(colecao).document(novoSaltoId)
             .collection("AccelerometerData").document(accelerometerData.timestamp.toString())
             .set(accelerometer)
