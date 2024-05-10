@@ -58,14 +58,10 @@ class LeaderBoardActivity : AppCompatActivity() {
 
     private suspend fun configurarGrafico(colecao: String) {
 
-        // Dados de exemplo (pontuações de jogadores)
-        //val scores = listOf(100, 120, 90, 110, 80)
-
         val cor = "#D6D4CE"
 
         val scores = obterTop5Pontuacoes(colecao)
 
-        // Entradas de dados
         val entries = ArrayList<BarEntry>()
         val labels = mutableListOf<String>()
         labels.add("")
@@ -76,51 +72,30 @@ class LeaderBoardActivity : AppCompatActivity() {
             labels.add(nomeUsuario)
         }
 
-        /*/ Entradas de dados
-        val entries = ArrayList<BarEntry>()
-        val labels = mutableListOf<String>()
-        topPontuacoes.forEach() { index, pair ->
-            val userId = index
-            val pontuacao = pair.toFloat()
-            entries.add(BarEntry(index.toFloat(), pontuacao))
-            labels.add(userId)
-        }*/
-
-        // Associa os nomes às barras
         barChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
 
-        // Conjunto de dados de barras
         val bardataSet = BarDataSet(entries, "Pontuações dos Jogadores")
-        bardataSet.color = Color.parseColor(cor) // Cor das barras
+        bardataSet.color = Color.parseColor(cor)
 
-        // Configuração dos dados do gráfico de barras
         val barData = BarData(bardataSet)
-        barData.barWidth = 0.5f // Largura das barras
+        barData.barWidth = 0.5f
 
-        // Configuração do gráfico
         barChart.data = barData
         barChart.data.setValueTextColor(Color.parseColor(cor))
-        barChart.setFitBars(true) // Ajusta o tamanho das barras
-        barChart.description.isEnabled = false // Desativa a descrição
-        barChart.xAxis.labelRotationAngle = 45f // Rotação dos rótulos do eixo X
-        barChart.xAxis.granularity = 1f // Espaçamento entre os rótulos do eixo X
+        barChart.setFitBars(true)
+        barChart.description.isEnabled = false
+        barChart.xAxis.labelRotationAngle = 45f
+        barChart.xAxis.granularity = 1f
 
-        // abaixo está a linha para definir os dados
-        // para o nosso gráfico de barras.
         barChart.data = barData
 
-        // adicionando cor ao nosso conjunto de dados de barra.
-        //bardataSet.colors = ColorTemplate.JOYFUL_COLORS
-
-        // definindo a cor do texto.
         bardataSet.valueTextColor = Color.parseColor(cor)
 
-        // definindo o tamanho do texto
         bardataSet.valueTextSize = 16f
 
         setupBarChart(cor)
 
-        barChart.invalidate() // Atualiza o gráfico
+        barChart.invalidate()
     }
 
 
@@ -131,17 +106,17 @@ class LeaderBoardActivity : AppCompatActivity() {
         val xAxis: XAxis = barChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawLabels(true)
-        xAxis.textColor = Color.parseColor(cor) // Define a cor do texto do eixo X
-        xAxis.gridColor = Color.parseColor(cor) // Define a cor das linhas de grade do eixo X
-        xAxis.axisLineColor = Color.parseColor(cor) // Define a cor da linha do eixo X
+        xAxis.textColor = Color.parseColor(cor)
+        xAxis.gridColor = Color.parseColor(cor)
+        xAxis.axisLineColor = Color.parseColor(cor)
 
         val rightYAxis = barChart.axisRight
         rightYAxis.isEnabled = false
 
         val leftYAxis: YAxis = barChart.axisLeft
-        leftYAxis.textColor = Color.parseColor(cor) // Define a cor do texto do eixo X
-        leftYAxis.gridColor = Color.parseColor(cor) // Define a cor das linhas de grade do eixo X
-        leftYAxis.axisLineColor = Color.parseColor(cor) // Define a cor da linha do eixo X
+        leftYAxis.textColor = Color.parseColor(cor)
+        leftYAxis.gridColor = Color.parseColor(cor)
+        leftYAxis.axisLineColor = Color.parseColor(cor)
 
         barChart.xAxis.setDrawGridLines(false)
         barChart.axisLeft.setDrawGridLines(false)
@@ -170,14 +145,13 @@ class LeaderBoardActivity : AppCompatActivity() {
                 val pontuacao = document.getLong("pontuação") ?: 0
                 val nomeUsuario = obterNomeDoUsuario(userId) ?: ""
 
-                // Adiciona o par (nome do usuário, pontuação) à lista
                 topPontuacoes.add(nomeUsuario to pontuacao)
             }
 
             topPontuacoes
         } catch (e: Exception) {
             Log.e("Firestore", "Erro ao obter top 5 pontuações: $e")
-            emptyList() // Retorna uma lista vazia em caso de erro
+            emptyList()
         }
     }
 
@@ -188,15 +162,12 @@ class LeaderBoardActivity : AppCompatActivity() {
                 if (documentSnapshot.exists()) {
                     val nome = documentSnapshot.getString("nome")
                     val apelido = documentSnapshot.getString("apelido")
-                    // Faça algo com o nome, como exibir ou retornar
                     val nomeCompleto = nome + " "+ apelido
                     continuation.resume(nomeCompleto)
                 } else {
-                    // O documento não existe
                     continuation.resumeWith(Result.success("falhou"))
                 }
             }.addOnFailureListener { exception ->
-                // Tratar falha ao obter o documento
                 continuation.resumeWithException(exception)
             }
         }
