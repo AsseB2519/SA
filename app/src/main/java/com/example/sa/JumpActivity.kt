@@ -44,9 +44,8 @@ class JumpActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_jump)
 
-        mediaPlayerbip = MediaPlayer.create(this, R.raw.countdown) // Substitua "sound.mp3" pelo nome do seu arquivo de som
+        mediaPlayerbip = MediaPlayer.create(this, R.raw.countdown)
 
-        // Initialize Firebase Auth
         auth = com.google.firebase.ktx.Firebase.auth
 
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -74,9 +73,6 @@ class JumpActivity : AppCompatActivity() {
                     vibrator.vibrate(1000)
                     val formattedTime = String.format("%02d:%02d", 0, 0)
                     findViewById<TextView>(R.id.timerdisplay).text = formattedTime
-                    //alertDialog.setMessage("Parabéns")
-                    //alertDialog.show() // Mostrar a caixa de diálogo
-                    //mediaPlayer.start()
                     criarSalto()
                 }
             }.start()
@@ -108,11 +104,10 @@ class JumpActivity : AppCompatActivity() {
         val gyroscopeSensorListener = GyroscopeSensorListener()
 
         var novoSaltoId:String= ""
-        // Declare um Handler e um Runnable
+
         val handler = Handler()
 
         val stopSensorTask = Runnable {
-            // Pare de coletar os dados do acelerômetro
             sensorManager.unregisterListener(accelerometerSensorListener)
             sensorManager.unregisterListener(gyroscopeSensorListener)
             lerDocs(novoSaltoId)
@@ -120,7 +115,6 @@ class JumpActivity : AppCompatActivity() {
 
         val currentUser = auth.currentUser
 
-        // Create a new user with a first and last name
         val novoSaltoData  = hashMapOf(
             "user_id" to currentUser?.uid,
             "altura" to 0,
@@ -130,10 +124,8 @@ class JumpActivity : AppCompatActivity() {
 
         val novoSaltoRef = db.collection("Jump").add(novoSaltoData)
             .addOnSuccessListener { documentReference ->
-                // O documento foi adicionado com sucesso, você pode acessar o ID aqui
                 novoSaltoId = documentReference.id
                 Log.d("JUMP333", "Novo ID de Salto: $novoSaltoId")
-                // Inicie a coleta dos dados do acelerômetro
                 mAccelerometer?.let { accelerometer ->
                     accelerometerSensorListener.setSensorManager(sensorManager, aViewModel,"Jump",novoSaltoId)
                     sensorManager.registerListener(
@@ -142,8 +134,7 @@ class JumpActivity : AppCompatActivity() {
                         SensorManager.SENSOR_DELAY_GAME
                     )
 
-                    // Defina um tempo para parar de coletar os dados (por exemplo, 1 segundos)
-                    handler.postDelayed(stopSensorTask, 2000) // 1000 milissegundos = 1 segundos
+                    handler.postDelayed(stopSensorTask, 2000) // 1000 milissegundos = 1 segundo
                 }
                 mGyroscope?.let { gyroscope ->
                     gyroscopeSensorListener.setSensorManager(sensorManager, aViewModel2,"Jump",novoSaltoId)
@@ -153,12 +144,10 @@ class JumpActivity : AppCompatActivity() {
                         SensorManager.SENSOR_DELAY_NORMAL
                     )
 
-                    // Defina um tempo para parar de coletar os dados (por exemplo, 1 segundos)
-                    handler.postDelayed(stopSensorTask, 2000) // 1000 milissegundos = 1 segundos
+                    handler.postDelayed(stopSensorTask, 2000) // 1000 milissegundos = 1 segundo
                 }
             }
             .addOnFailureListener { e ->
-                // Ocorreu um erro ao adicionar o documento
                 Log.e("JUMP333", "Erro ao adicionar o documento", e)
             }
 
@@ -167,7 +156,7 @@ class JumpActivity : AppCompatActivity() {
     private fun lerDocs(novoSaltoId:String){
         db.collection("Jump").document(novoSaltoId)
             .collection("AccelerometerData")
-            .orderBy("timestamp") // Ordenar os documentos pelo campo "timestamp"
+            .orderBy("timestamp")
             .get()
             .addOnSuccessListener { result ->
                 val listaDeDados=result.toObjects<AccelerometerData>()
@@ -214,45 +203,36 @@ class JumpActivity : AppCompatActivity() {
         var velocity = 0f
         var lastTimeStamp = listaDeDados.first().timestamp
 
-        // Encontre o elemento com o menor valor de accelerometerZ
         val elementoMaisNegativo = maxNegativoAntesDeSubir(listaDeDados)
         Log.w("User555","minimo $elementoMaisNegativo")
 
-        // Obtenha o timestamp do primeiro elemento da lista
         val primeiroTimestamp = listaDeDados.firstOrNull()?.timestamp ?: 0
 
-        // Calcule a diferença de tempo se o elemento mais negativo existir
         val diferencaDeTempo: Long = if (elementoMaisNegativo != null) {
             val timestampMaisNegativo = elementoMaisNegativo.timestamp
             timestampMaisNegativo - primeiroTimestamp
         } else {
-            0// Se não houver elemento mais negativo, retorne 0
+            0
         }
         var res = BigDecimal(diferencaDeTempo).divide(BigDecimal(1000000000))
 
         val h= 0.5 * res.toFloat()*res.toFloat()*9.81
         pontos=calcularPontuacaocomH(h)
 
-        // Referência para o documento que você deseja atualizar
         val docRef = db.collection("Jump").document(novoSaltoId)
 
-        // Atualiza o campo desejado
         docRef
             .update("altura", h)
             .addOnSuccessListener {
-                // Sucesso ao atualizar o campo
             }
             .addOnFailureListener { e ->
-                // Tratamento de erro
             }
 
         docRef
             .update("pontuação", pontos)
             .addOnSuccessListener {
-                // Sucesso ao atualizar o campo
             }
             .addOnFailureListener { e ->
-                // Tratamento de erro
             }
 
         return pontos
@@ -263,8 +243,6 @@ class JumpActivity : AppCompatActivity() {
             alturaSalto <= 0 -> 0
             alturaSalto >= 1.3 -> 999
             else -> {
-                // Aqui você pode definir uma relação entre a altura do salto e a pontuação
-                // por exemplo, você pode usar uma função linear, exponencial, etc.
                 val pontuacao = (alturaSalto * 769).toInt() // Ajustado para o máximo de 1.3 metros
                 pontuacao
             }
@@ -273,18 +251,14 @@ class JumpActivity : AppCompatActivity() {
 
     private fun animarPontuacao(pontuacao:Int) {
 
-        // Criar um ValueAnimator para animar a pontuação
         val animator = ValueAnimator.ofInt(0, pontuacao)
-        animator.duration = 2000 // Duração da animação em milissegundos
+        animator.duration = 2000
 
-        // Adicionar um listener de atualização de valor
         animator.addUpdateListener { animation ->
-            // Atualizar o TextView com o valor animado
             val valorAtual = animation.animatedValue as Int
             findViewById<TextView>(R.id.pontos).text = "$valorAtual"
         }
-
-        // Iniciar a animação
+        
         animator.start()
     }
 }
