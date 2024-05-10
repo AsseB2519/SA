@@ -31,7 +31,7 @@ class LongJumpActivity : AppCompatActivity() {
 
         db.collection(collection).document(documento)
             .collection("AccelerometerData")
-            .orderBy("timestamp") // Ordenar os documentos pelo campo "timestamp"
+            .orderBy("timestamp")
             .get()
             .addOnSuccessListener { result ->
                 val listaDeDados=result.toObjects<AccelerometerData>()
@@ -54,40 +54,28 @@ class LongJumpActivity : AppCompatActivity() {
 
     }
 
-    // Função para integrar a aceleração vertical
     fun integrateAcceleration(listaDeDados: List<AccelerometerData>, dt: Double): List<Double> {
-        // Inicializar lista de velocidades
+
         val velocities = mutableListOf<Double>()
 
-        // Velocidade inicial (assumindo repouso inicial)
         var velocity = 0.0
 
-        // Integrar a aceleração para cada ponto de dados
         for (acceleration in listaDeDados) {
-            // Calcular a nova velocidade
             velocity += acceleration.accelerometerZ * dt
-
-            // Adicionar a nova velocidade à lista
             velocities.add(velocity)
         }
 
         return velocities
     }
 
-    // Função para integrar a velocidade vertical e calcular a posição vertical
     fun integrateVelocity(velocities: List<Double>, dt: Double): List<Double> {
-        // Inicializar lista de posições
+
         val positions = mutableListOf<Double>()
 
-        // Posição inicial (assumindo repouso inicial)
         var position = 0.0
 
-        // Integrar a velocidade para cada ponto de dados
         for (velocity in velocities) {
-            // Calcular a nova posição
             position += velocity * dt
-
-            // Adicionar a nova posição à lista
             positions.add(position)
         }
 
@@ -100,7 +88,6 @@ class LongJumpActivity : AppCompatActivity() {
 
         for (i in listaDeDados.indices) {
             val valor = listaDeDados[i].accelerometerZ
-            // Se o valor for negativo e ainda não encontramos um máximo negativo
             if (valor < 0) {
                 if (maxNegativo == null || valor < maxNegativo){
                     maxNegativo = valor
@@ -110,7 +97,7 @@ class LongJumpActivity : AppCompatActivity() {
                     break
                 }
             }
-            // Se encontramos um valor positivo ou zero, paramos
+
             else if (valor >= 0 && maxNegativo != null) {
                 break
             }
