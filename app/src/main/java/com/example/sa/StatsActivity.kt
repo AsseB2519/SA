@@ -47,7 +47,6 @@ class StatsActivity : AppCompatActivity() {
             insets
         }
 
-        // Initialize Firebase Auth
         auth = com.google.firebase.ktx.Firebase.auth
 
         val userId = auth.uid
@@ -80,7 +79,7 @@ class StatsActivity : AppCompatActivity() {
     }
 
     private suspend fun contarDocumentosPorUsuario(userId: String): Map<String, Long> {
-        val colecoes = listOf("Box", "Jump", "Shoot") // Substitua pelos nomes reais das suas coleções
+        val colecoes = listOf("Box", "Jump", "Shoot")
         val contagens = mutableMapOf<String, Long>()
 
         for (colecao in colecoes) {
@@ -108,23 +107,19 @@ class StatsActivity : AppCompatActivity() {
         val pieData = PieData(dataSet)
         pieChart.data = pieData
 
-        // Adicionar um ouvinte para detectar cliques em fatias do gráfico
         pieChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 if (e == null) return
-                val valorAbsoluto = e.y.toInt() // Obter o valor absoluto da fatia selecionada
-                // val label = e.label Obter a label da fatia selecionada
-                val label = (e as PieEntry).label // Obter o nome da fatia selecionada
+                val valorAbsoluto = e.y.toInt()
+                val label = (e as PieEntry).label
                 val mensagem = "You did : $valorAbsoluto $label"
                 Toast.makeText(applicationContext, mensagem, Toast.LENGTH_SHORT).show()
             }
 
-            override fun onNothingSelected() {
-                // Este método é chamado quando nenhuma fatia é selecionada
-            }
+            override fun onNothingSelected() {}
         })
 
-        pieChart.invalidate() // Atualiza o gráfico
+        pieChart.invalidate()
     }
 
     private fun setupPieChart() {
