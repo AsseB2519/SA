@@ -59,7 +59,6 @@ class LineActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.jogo).text = colecao
 
-        // Initialize Firebase Auth
         auth = com.google.firebase.ktx.Firebase.auth
 
         val userId = auth.uid
@@ -75,12 +74,10 @@ class LineActivity : AppCompatActivity() {
             println("ID do usuário é nulo. Não é possível contar os documentos.")
         }
 
-        //number = findViewById<TextView>(R.id.number).text.toString().toInt() // Supondo que você está dentro de uma atividade ou fragmento
         val editText = findViewById<EditText>(R.id.number)
 
         editText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                // Aqui você pode acessar o texto digitado no EditText
                 val texto = s.toString()
 
                 if (texto.isNotEmpty()){
@@ -111,14 +108,10 @@ class LineActivity : AppCompatActivity() {
 
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Não é necessário implementar este método, mas é necessário tê-lo devido à interface TextWatcher
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Não é necessário implementar este método, mas é necessário tê-lo devido à interface TextWatcher
-            }
-        })
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        )
 
     }
 
@@ -148,13 +141,10 @@ class LineActivity : AppCompatActivity() {
 
             val timestampPontuacaoMap = LinkedHashMap<Long, Long>()
 
-            // Iterar sobre os documentos no snapshot
             for (document in snapshot.documents) {
-                // Obter o valor do timestamp e da pontuação do documento
                 val timestamp = document.getTimestamp("timestamp")?.seconds ?: 0
                 val pontuacao = document.getLong("pontuação") ?: 0
 
-                // Adicionar os dados ao mapa
                 timestampPontuacaoMap[timestamp] = pontuacao
             }
             Log.w("Firestore", "$timestampPontuacaoMap")
@@ -177,7 +167,6 @@ class LineActivity : AppCompatActivity() {
         linelist = ArrayList()
         var position = 0
         var value = 0f
-        // Usando um loop for
         for ((timestamp, pontuacao) in pontuação.toList().reversed()) {
             Log.w("Firestore", "${timestamp.toFloat()} : ${pontuacao.toFloat()}")
             linelist.add(Entry(position.toFloat(),pontuacao.toFloat()))
@@ -187,9 +176,9 @@ class LineActivity : AppCompatActivity() {
 
         lineDataSet1 = LineDataSet(linelist,"Points")
         lineDataSet1.color=Color.parseColor("#E63C3A")
-        lineDataSet1.setCircleColor(Color.parseColor("#E63C3A")) // Define a cor dos pontos
+        lineDataSet1.setCircleColor(Color.parseColor("#E63C3A"))
         lineDataSet1.valueTextColor= Color.parseColor(cor)
-        lineDataSet1.color = Color.parseColor("#E63C3A") // Define a cor da linha
+        lineDataSet1.color = Color.parseColor("#E63C3A")
         lineDataSet1.valueTextSize=14f
         lineDataSet1.setDrawFilled(false)
 
@@ -199,9 +188,9 @@ class LineActivity : AppCompatActivity() {
 
         lineDataSet2 = LineDataSet(linelist2,"Prediction")
         lineDataSet2.color=Color.BLUE
-        lineDataSet2.setCircleColor(Color.BLUE) // Define a cor dos pontos
+        lineDataSet2.setCircleColor(Color.BLUE)
         lineDataSet2.valueTextColor= Color.parseColor(cor)
-        lineDataSet2.color = Color.BLUE // Define a cor da linha
+        lineDataSet2.color = Color.BLUE
         lineDataSet2.valueTextSize=14f
         lineDataSet2.setDrawFilled(false)
 
@@ -210,30 +199,30 @@ class LineActivity : AppCompatActivity() {
 
         setupLineChart(cor)
 
-        lineChart.invalidate() // Atualiza o gráfico
+        lineChart.invalidate()
 
 
     }
 
     private fun setupLineChart(cor:String) {
-        lineChart.description.isEnabled = true // Desativa a descrição
+        lineChart.description.isEnabled = true
         lineChart.description.textColor=Color.parseColor(cor)
         lineChart.legend.textColor = Color.parseColor(cor)
 
         val xAxis: XAxis = lineChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.textColor = Color.parseColor(cor) // Define a cor do texto do eixo X
-        xAxis.gridColor = Color.parseColor(cor) // Define a cor das linhas de grade do eixo X
-        xAxis.axisLineColor = Color.parseColor(cor) // Define a cor da linha do eixo X
+        xAxis.textColor = Color.parseColor(cor)
+        xAxis.gridColor = Color.parseColor(cor)
+        xAxis.axisLineColor = Color.parseColor(cor)
         xAxis.setDrawGridLines(false)
         xAxis.labelCount = lineDataSet1.entryCount
         xAxis.setDrawLabels(true)
 
         val leftYAxis: YAxis = lineChart.axisLeft
         leftYAxis.setDrawGridLines(false)
-        leftYAxis.textColor = Color.parseColor(cor) // Define a cor do texto do eixo X
-        leftYAxis.gridColor = Color.parseColor(cor) // Define a cor das linhas de grade do eixo X
-        leftYAxis.axisLineColor = Color.parseColor(cor) // Define a cor da linha do eixo X
+        leftYAxis.textColor = Color.parseColor(cor)
+        leftYAxis.gridColor = Color.parseColor(cor)
+        leftYAxis.axisLineColor = Color.parseColor(cor)
 
         val rightYAxis: YAxis = lineChart.axisRight
         rightYAxis.isEnabled = false
@@ -250,37 +239,28 @@ class LineActivity : AppCompatActivity() {
 
         val pontuacoes = pontuação.values.toList()
 
-        // Se houver menos de 2 pontuações, não podemos fazer uma previsão
         if (pontuacoes.size < 2) {
-            return 0f // Retorna 0 como estimativa padrão
+            return 0f
         }
-        // Calcula a média das pontuações
+
         val media = pontuacoes.average()
 
-        // Calcula a soma dos quadrados das diferenças em relação à média
         val somaQuadradosDiferencas = pontuacoes.map { (it - media).pow(2) }.sum()
 
-        // Calcula o desvio padrão das pontuações
         val desvioPadrao = sqrt(somaQuadradosDiferencas / pontuacoes.size)
 
-        // Calcula o coeficiente de correlação
         val coeficienteCorrelacao = if (desvioPadrao == 0.0) {
-            0.0 // Se o desvio padrão for zero, o coeficiente de correlação é zero
+            0.0
         } else {
-            // Calcula a soma dos produtos das diferenças em relação à média
             val somaProdutosDiferencas = pontuacoes.map { (it - media) }.sum()
 
-            // Calcula o coeficiente de correlação
             somaProdutosDiferencas / (pontuacoes.size * desvioPadrao)
         }
 
-        // Calcula o coeficiente angular (slope) da reta de regressão
         val coeficienteAngular = coeficienteCorrelacao * (desvioPadrao / pontuacoes.size)
 
-        // Calcula a interceptação (intercept) da reta de regressão
         val interceptacao = media - (coeficienteAngular * (pontuacoes.size / 2.0))
 
-        // Calcula a próxima pontuação estimada
         val proximaPontuacao = interceptacao + (coeficienteAngular * (pontuacoes.size + 1))
 
         return proximaPontuacao.toFloat()
