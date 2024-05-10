@@ -35,14 +35,12 @@ class GyroscopeSensorListener: SensorEventListener {
             timestamp = event.timestamp
         )
 
-        //sensorManager.unregisterListener(this)
         ourGyroscopeViewModel.currentGyroscopeData.value = GyroscopeData
         Log.d(TAG,"[SENSOR] - X=${GyroscopeData.gyroscopeX},Y=${GyroscopeData.gyroscopeY}," +
                 "Z=${GyroscopeData.gyroscopeZ}")
 
         val db = Firebase.firestore
 
-        // Create a new user with a first and last name
         val gyroscope = hashMapOf(
             "gyroscopeX" to GyroscopeData.gyroscopeX,
             "gyroscopeY" to GyroscopeData.gyroscopeY,
@@ -50,7 +48,6 @@ class GyroscopeSensorListener: SensorEventListener {
             "timestamp" to GyroscopeData.timestamp
         )
 
-        // Add a new document with a generated ID
         db.collection(colecao).document(novoSaltoId)
             .collection("GyroscopeData").document(GyroscopeData.timestamp.toString())
             .set(gyroscope)
