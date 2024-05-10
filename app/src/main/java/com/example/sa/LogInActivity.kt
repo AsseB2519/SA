@@ -21,7 +21,6 @@ class LogInActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_log_in)
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
