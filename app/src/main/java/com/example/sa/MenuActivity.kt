@@ -69,47 +69,13 @@ class MenuActivity : AppCompatActivity() {
             drawerLayout.open()
         }
 
-
-        // Initialize Firebase Auth
         auth = Firebase.auth
 
         val head = navView.getHeaderView(0)
         head.findViewById<TextView>(R.id.email).text=auth.currentUser?.email
 
         val sports = listOf("Line","stats","Radar","Leader")
-        /*
-        val autoComplete : AutoCompleteTextView=findViewById(R.id.auto_complete)
         
-        val adapter = ArrayAdapter(this,R.layout.list_item,sports)
-        
-        autoComplete.setAdapter(adapter)
-        
-        autoComplete.onItemClickListener = AdapterView.OnItemClickListener{
-                adapterView: AdapterView<*>?, view: View?, position: Int, id: Long ->
-
-            val itemSelected = adapterView?.getItemAtPosition(position)
-
-            if (itemSelected=="Line") {
-                val intent = Intent(this, LineActivity::class.java)
-                intent.putExtra("colecao", "Jump")
-                startActivity(intent)
-            }
-            else if(itemSelected=="stats"){
-                val intent = Intent(this, StatsActivity::class.java)
-                startActivity(intent)
-            }
-            else if(itemSelected=="Radar"){
-                val intent = Intent(this, RadarActivity::class.java)
-                startActivity(intent)
-            }
-            else if(itemSelected=="Leader"){
-                val intent = Intent(this, LeaderBoardActivity::class.java)
-                intent.putExtra("colecao", "Jump")
-                startActivity(intent)
-            }
-        }*/
-
-
         val currentUser = auth.currentUser
 
         findViewById<ImageView>(R.id.imageView3).setOnClickListener{
@@ -137,30 +103,23 @@ class MenuActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Configurar o listener de seleção de itens de navegação
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_home -> {
-                    //supportFragmentManager.beginTransaction().replace(R.id.fragment_container, HomeFragment()).commit()
-                }
-                R.id.nav_settings -> {
-                    //supportFragmentManager.beginTransaction().replace(R.id.fragment_container, SettingsFragment()).commit()
-                }
+                R.id.nav_home -> {}
+                R.id.nav_settings -> {}
                 R.id.nav_profile->{
                     val intent = Intent(this, ProfileActivity::class.java)
                     startActivity(intent)
                 }
                 R.id.nav_logout -> {
                     Toast.makeText(this, "Logout!", Toast.LENGTH_SHORT).show()
-                    // Coloque aqui a lógica para realizar o logout
                     Firebase.auth.signOut()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                 }
             }
-            // Fechar o DrawerLayout após selecionar um item
             drawerLayout.closeDrawer(GravityCompat.START)
-            true // Indica que o evento de clique foi consumido
+            true 
         }
 
     }
@@ -189,7 +148,6 @@ class MenuActivity : AppCompatActivity() {
 
     private suspend fun contarDocumentosCriadosHojeParaUsuario(colecao: String, userId: String): Int {
         return try {
-            // Obter a data de hoje
             val hoje = Calendar.getInstance()
             hoje.set(Calendar.HOUR_OF_DAY, 0)
             hoje.set(Calendar.MINUTE, 0)
@@ -197,7 +155,6 @@ class MenuActivity : AppCompatActivity() {
             hoje.set(Calendar.MILLISECOND, 0)
             val inicioDoDia = hoje.time
 
-            // Criar a consulta que busca documentos criados hoje para o usuário especificado
             val query = db.collection(colecao)
                 .whereEqualTo("user_id", userId)
                 .whereGreaterThanOrEqualTo("timestamp", inicioDoDia)
@@ -210,15 +167,13 @@ class MenuActivity : AppCompatActivity() {
 
             snapshot.size()
         } catch (e: Exception) {
-            // Tratar exceção
             Log.e("Firestore", "Erro ao contar documentos: $e")
-            // Retornar 0 ou lançar uma exceção, dependendo da sua lógica de tratamento de erros
             0
         }
     }
 
     private suspend fun contarDocumentosPorUserHoje(userId: String): Int{
-        val colecoes = listOf("Box", "Jump", "Shoot") // Substitua pelos nomes reais das suas coleções
+        val colecoes = listOf("Box", "Jump", "Shoot")
         var res = 0
         for (colecao in colecoes) {
             res += contarDocumentosCriadosHojeParaUsuario(colecao, userId).toInt()
@@ -230,8 +185,7 @@ class MenuActivity : AppCompatActivity() {
 
     private suspend fun configurarGrafico() {
 
-        // Porcentagem atingida e objetivo (valores de exemplo)
-        var percentReached = 0f // Porcentagem atingida
+        var percentReached = 0f
         percentReached = auth.uid?.let { contarDocumentosPorUserHoje(it).toFloat() }!!
         val goal = 10f // Objetivo
 
@@ -244,35 +198,29 @@ class MenuActivity : AppCompatActivity() {
                 "You did ${percentReached.toInt()} of your 10 activities goal"
         }
 
-        // Calcula a porcentagem restante
         val percentRemaining = goal - percentReached
 
-        // Entradas de dados para o PieChart
         val entries = ArrayList<PieEntry>()
-        entries.add(PieEntry(percentReached, "Alcançado")) // Adiciona a porcentagem atingida como uma fatia
-        entries.add(PieEntry(percentRemaining, "Restante")) // Adiciona a porcentagem restante como outra fatia
+        entries.add(PieEntry(percentReached, "Alcançado"))
+        entries.add(PieEntry(percentRemaining, "Restante"))
 
-        // Conjunto de dados do PieChart
         val dataSet = PieDataSet(entries, "Progresso")
 
-        // Cores para as fatias do PieChart
         dataSet.colors = listOf(Color.parseColor("#E63C3A"), Color.parseColor("#696969"))
         dataSet.valueTextColor = Color.WHITE
         dataSet.setDrawValues(false)
 
-        // Configuração dos dados do PieChart
         val pieData = PieData(dataSet)
 
-        // Configuração do PieChart
         pieChart.data = pieData
-        pieChart.description.isEnabled = false // Desativa a descrição
-        pieChart.legend.isEnabled = false // Desativa a legenda
-        pieChart.centerText = "${percentReached*100/goal}%" // Texto central exibindo a porcentagem atingida
+        pieChart.description.isEnabled = false
+        pieChart.legend.isEnabled = false
+        pieChart.centerText = "${percentReached*100/goal}%"
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.setDrawEntryLabels(false)
-        pieChart.setTransparentCircleColor(Color.TRANSPARENT) // Cor da borda do buraco central (transparente para não mostrar)
+        pieChart.setTransparentCircleColor(Color.TRANSPARENT)
         pieChart.setCenterTextColor(Color.WHITE)
-        pieChart.invalidate() // Atualiza o gráfico
+        pieChart.invalidate()
     }
 
     private suspend fun contarDocumentosPorColecao(userId: String, colecao: String): Long {
@@ -288,7 +236,7 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private suspend fun contarDocumentosPorUsuario(userId: String): Int{
-        val colecoes = listOf("Box", "Jump", "Shoot") // Substitua pelos nomes reais das suas coleções
+        val colecoes = listOf("Box", "Jump", "Shoot")
         val contagens = mutableMapOf<String, Long>()
         var res = 0
         for (colecao in colecoes) {
@@ -305,15 +253,12 @@ class MenuActivity : AppCompatActivity() {
                 if (documentSnapshot.exists()) {
                     val nome = documentSnapshot.getString("nome")
                     val apelido = documentSnapshot.getString("apelido")
-                    // Faça algo com o nome, como exibir ou retornar
                     val nomeCompleto = nome + " "+ apelido
                     continuation.resume(nomeCompleto)
                 } else {
-                    // O documento não existe
                     continuation.resumeWith(Result.success("falhou"))
                 }
             }.addOnFailureListener { exception ->
-                // Tratar falha ao obter o documento
                 continuation.resumeWithException(exception)
             }
         }
